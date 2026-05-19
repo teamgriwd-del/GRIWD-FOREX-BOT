@@ -29,17 +29,18 @@ class Trade:
     trailing_stop: float = 0.0
     reasons: list = field(default_factory=list)
     pattern: str = ""
-    score: int = 0
+    score: float = 0.0
 
 
 class RiskManager:
-    def __init__(self, balance: float = ACCOUNT_BALANCE):
+    def __init__(self, balance: float = ACCOUNT_BALANCE, memory=None):
         self.balance        = balance
         self.equity         = balance
         self.peak_equity    = balance
         self.open_trades: list[Trade] = []
         self.closed_trades: list[Trade] = []
         self._trade_counter = 0
+        self._memory        = memory   # TradeMemory instance (optional)
 
     # ── Position Sizing ───────────────────────────────────────────────────────
 
@@ -119,7 +120,7 @@ class RiskManager:
             gross = (price - trade.entry) * trade.lot_size * CONTRACT_SIZE * PIP_VALUE
         else:
             gross = (trade.entry - price) * trade.lot_size * CONTRACT_SIZE * PIP_VALUE
-        trade.pnl        = gross - COMMISSION
+        trade.pnl         = gross - COMMISSION
         trade.close_price = price
         trade.close_time  = time
         trade.status      = status
@@ -128,6 +129,9 @@ class RiskManager:
         self.peak_equity  = max(self.peak_equity, self.equity)
         self.open_trades.remove(trade)
         self.closed_trades.append(trade)
+        # Teach the learning engine what this trade looked like
+        if self._memory is not None:
+            self._memory.record_trade(trade)
 
     # ── Portfolio Stats ───────────────────────────────────────────────────────
 

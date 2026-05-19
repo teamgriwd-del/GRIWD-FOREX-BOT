@@ -43,6 +43,17 @@ class TrendLine:
     kind: str        # "support_tl" | "resistance_tl"
     ts1: Optional[pd.Timestamp] = None
     ts2: Optional[pd.Timestamp] = None
+    touches: int = 2        # how many swing points validate this line
+    quality: float = 0.4    # 0.0–1.0; driven by touch count
+    broken: bool = False    # True when price closed through the line
+
+
+def trendline_price_at(tl: "TrendLine", bar_idx: int) -> float:
+    """Project (extrapolate) a trend line to any bar index."""
+    if tl.x2 == tl.x1:
+        return tl.y1
+    slope = (tl.y2 - tl.y1) / (tl.x2 - tl.x1)
+    return tl.y1 + slope * (bar_idx - tl.x1)
 
 
 @dataclass
@@ -207,33 +218,84 @@ def derive_buy_sell_zones(order_blocks: list,
 # ── Trend Lines ───────────────────────────────────────────────────────────────
 
 def find_trend_lines(df: pd.DataFrame,
+                     atr: pd.Series = None,
                      lookback: int = SWING_LOOKBACK) -> list:
     """
-    Connect the last 2 swing lows  → support trend line.
-    Connect the last 2 swing highs → resistance trend line.
+    Build validated trend lines from swing highs/lows.
+
+    For each candidate pair of swing points the line is scored by how many
+    *other* swing points fall within ATR*0.4 of it (multi-touch validation).
+    Lines are also tagged as broken when recent closes crossed through them.
+
+    Returns up to 2 support + 2 resistance lines, ranked by quality.
     """
     swing_highs, swing_lows = find_swings(df, lookback)
-    lines = []
 
-    if len(swing_lows) >= 2:
-        l1, l2 = swing_lows[-2], swing_lows[-1]
-        lines.append(TrendLine(
-            x1=l1.index, x2=l2.index,
-            y1=l1.price, y2=l2.price,
-            kind="support_tl",
-            ts1=l1.timestamp, ts2=l2.timestamp,
-        ))
+    if atr is not None and not atr.dropna().empty:
+        atr_val = float(atr.dropna().iloc[-1])
+    elif "atr" in df.columns and not df["atr"].dropna().empty:
+        atr_val = float(df["atr"].dropna().iloc[-1])
+    else:
+        atr_val = float((df["high"] - df["low"]).mean())
 
+    tolerance   = atr_val * 0.4
+    current_bar = len(df) - 1
+    results     = []
+
+    def _build(p1, p2, all_swings, kind):
+        if p2.index == p1.index:
+            return None
+        slope = (p2.price - p1.price) / (p2.index - p1.index)
+
+        # Count how many other swings lie on this line (within tolerance)
+        touches = 2
+        for pt in all_swings:
+            if pt is p1 or pt is p2:
+                continue
+            expected = p1.price + slope * (pt.index - p1.index)
+            if abs(pt.price - expected) <= tolerance:
+                touches += 1
+
+        tl_now = p1.price + slope * (current_bar - p1.index)
+        recent_closes = df["close"].values[-5:]
+
+        if kind == "support_tl":
+            broken = bool(np.any(recent_closes < tl_now - tolerance))
+        else:
+            broken = bool(np.any(recent_closes > tl_now + tolerance))
+
+        # quality: 2 touches → 0.25, 5 touches → 1.0
+        quality = min(1.0, (touches - 1) / 4.0)
+
+        return TrendLine(
+            x1=p1.index, x2=p2.index,
+            y1=p1.price, y2=p2.price,
+            kind=kind,
+            ts1=p1.timestamp, ts2=p2.timestamp,
+            touches=touches,
+            quality=quality,
+            broken=broken,
+        )
+
+    def _collect(swings, kind):
+        recent = swings[-10:]
+        for i in range(len(recent) - 1, 0, -1):
+            for j in range(i - 1, max(i - 5, -1), -1):
+                tl = _build(recent[j], recent[i], swings, kind)
+                if tl is not None:
+                    results.append(tl)
+
+    if len(swing_lows)  >= 2:
+        _collect(swing_lows,  "support_tl")
     if len(swing_highs) >= 2:
-        h1, h2 = swing_highs[-2], swing_highs[-1]
-        lines.append(TrendLine(
-            x1=h1.index, x2=h2.index,
-            y1=h1.price, y2=h2.price,
-            kind="resistance_tl",
-            ts1=h1.timestamp, ts2=h2.timestamp,
-        ))
+        _collect(swing_highs, "resistance_tl")
 
-    return lines
+    def _top2(kind):
+        subset = [t for t in results if t.kind == kind]
+        subset.sort(key=lambda t: (t.quality, t.touches), reverse=True)
+        return subset[:2]
+
+    return _top2("support_tl") + _top2("resistance_tl")
 
 
 # ── Sweep Markers ─────────────────────────────────────────────────────────────
@@ -280,7 +342,7 @@ def build_zone_map(df: pd.DataFrame, atr: pd.Series) -> ZoneMap:
     zm.buy_zones, zm.sell_zones = derive_buy_sell_zones(
         zm.order_blocks, zm.support_zones, zm.resistance_zones, zm.fvgs
     )
-    zm.trend_lines   = find_trend_lines(df)
+    zm.trend_lines   = find_trend_lines(df, atr)
     zm.sweep_markers = find_sweep_markers(df, atr)
 
     # Equilibrium of visible range

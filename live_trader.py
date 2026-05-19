@@ -11,13 +11,18 @@ from collections import defaultdict
 
 import mt5_connector as mt5c
 from signal_engine import generate_signal
+from trade_memory import TradeMemory
 from config import (
     ENTRY_TF, CONFIRM_TF, TREND_TF,
     ACCOUNT_BALANCE, RISK_PER_TRADE_PCT,
     MAX_OPEN_TRADES, MAX_TRADES_PER_SYMBOL,
     TRAILING_STOP, TRAILING_ATR_MULT,
     AUTO_DISCOVER_SYMBOLS, INSTRUMENTS, SYMBOL_KEYWORDS,
+    MEMORY_FILE,
 )
+
+# Shared learning memory — loads prior backtest knowledge and accumulates live data
+_memory = TradeMemory(MEMORY_FILE)
 
 # ── Logging ───────────────────────────────────────────────────────────────────
 import sys
@@ -121,7 +126,7 @@ def scan_symbol(symbol: str, balance: float, dry_run: bool, now: datetime):
     atr_now = data[ENTRY_TF]["atr"].iloc[-1]
     price   = data[ENTRY_TF]["close"].iloc[-1]
 
-    signal = generate_signal(data, timestamp=now)
+    signal = generate_signal(data, timestamp=now, memory=_memory)
     if signal is None:
         return   # no confluence — stay silent
 
@@ -194,6 +199,12 @@ def run_live(symbols: list = None, dry_run: bool = False):
 
     acct = mt5c.account_info()
     log.info(f"  Account  : {acct.get('balance', 0):.2f} {acct.get('currency', 'USD')}")
+
+    lessons = _memory.get_lessons()
+    if lessons:
+        log.info("  Learned lessons from trade memory:")
+        for lesson in lessons:
+            log.info(f"    • {lesson}")
 
     consecutive_errors = 0
 

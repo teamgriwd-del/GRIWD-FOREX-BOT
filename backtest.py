@@ -8,9 +8,10 @@ import pandas as pd
 from data_feed import get_data, resample, compute_atr
 from signal_engine import generate_signal
 from risk_manager import RiskManager
+from trade_memory import TradeMemory
 from config import (
     DATA_SOURCE, ENTRY_TF, CONFIRM_TF, TREND_TF,
-    SWING_LOOKBACK, ATR_PERIOD
+    SWING_LOOKBACK, ATR_PERIOD, MEMORY_FILE,
 )
 
 # Minimum bars needed before we start trading
@@ -27,7 +28,8 @@ def run_backtest(data: dict = None, verbose: bool = False) -> dict:
         data = get_data(DATA_SOURCE)
 
     df_5m  = data[ENTRY_TF]
-    rm     = RiskManager()
+    memory = TradeMemory(MEMORY_FILE)
+    rm     = RiskManager(memory=memory)
     equity_curve = []
 
     print(f"Backtesting on {len(df_5m)} x 5m candles | "
@@ -69,7 +71,7 @@ def run_backtest(data: dict = None, verbose: bool = False) -> dict:
                 CONFIRM_TF: slice_15m,
                 TREND_TF  : slice_1h,
             }
-            signal = generate_signal(current_data, ts)
+            signal = generate_signal(current_data, ts, memory=memory)
             if signal is not None:
                 trade = rm.open_trade(signal, atr_now)
                 if trade and verbose:
@@ -88,7 +90,7 @@ def run_backtest(data: dict = None, verbose: bool = False) -> dict:
 
     stats = rm.stats()
     stats["equity_curve"] = equity_curve
-    return stats, rm
+    return stats, rm, memory
 
 
 def print_report(stats: dict):
@@ -109,5 +111,6 @@ def print_report(stats: dict):
 
 
 if __name__ == "__main__":
-    results, rm = run_backtest(verbose=True)
+    results, rm, memory = run_backtest(verbose=True)
     print_report(results)
+    memory.print_summary()

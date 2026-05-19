@@ -47,14 +47,25 @@ SCORE_WEIGHTS = {
     "consolidation_break": 1,  # impulse out of consolidation range
     "liquidity_sweep"   : 1,   # sweep of prior high/low before entry
     "equilibrium_zone"  : 1,   # price at 50% of range (EQ)
+    "tl_bounce"         : 1,   # price bouncing off validated trend line
+    "tl_break"          : 1,   # momentum entry after trend line break
 }
+
+# ── Trend Line Quality ────────────────────────────────────────────────────────
+TL_BOUNCE_TOLERANCE    = 0.4    # price must be within X * ATR of trend line
+TL_QUALITY_THRESHOLD   = 0.3    # min quality score (0-1) to use a trend line
+
+# ── Adaptive Learning ─────────────────────────────────────────────────────────
+MEMORY_FILE            = "trade_memory.json"
 
 # ── Risk Management ───────────────────────────────────────────────────────────
 ACCOUNT_BALANCE        = 10_000.0   # starting balance USD
 RISK_PER_TRADE_PCT     = 0.01       # 1% risk per trade
 MAX_OPEN_TRADES        = 3
 REWARD_RISK_RATIO      = 2.0        # minimum RR required to take trade
-STOP_ATR_MULT          = 1.5        # stop = X * ATR beyond entry
+STOP_ATR_MULT          = 1.5        # fallback stop = X * ATR beyond entry
+SWING_SL_BUFFER        = 0.3        # ATR buffer beyond swing point for SL
+MAX_SL_ATR             = 3.0        # hard cap: SL never wider than X * ATR
 TRAILING_STOP          = True
 TRAILING_ATR_MULT      = 1.0
 
