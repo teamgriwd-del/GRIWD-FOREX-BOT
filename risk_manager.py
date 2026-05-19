@@ -97,21 +97,29 @@ class RiskManager:
                 trade.stop_loss = new_stop
 
     def check_close(self, trade: Trade, current_price: float,
-                    current_time) -> bool:
-        """Returns True if trade should be closed."""
+                    current_time, bar_high: float = None,
+                    bar_low: float = None) -> bool:
+        """
+        Returns True if trade should be closed.
+        Uses bar high/low for intrabar SL/TP detection so wicks don't slip past stops.
+        Falls back to close price when high/low are not provided.
+        """
+        hi = bar_high if bar_high is not None else current_price
+        lo = bar_low  if bar_low  is not None else current_price
+
         if trade.direction == "buy":
-            if current_price <= trade.stop_loss:
-                self._close(trade, current_price, current_time, "stopped")
+            if lo <= trade.stop_loss:
+                self._close(trade, trade.stop_loss, current_time, "stopped")
                 return True
-            if current_price >= trade.take_profit:
-                self._close(trade, current_price, current_time, "tp_hit")
+            if hi >= trade.take_profit:
+                self._close(trade, trade.take_profit, current_time, "tp_hit")
                 return True
         else:
-            if current_price >= trade.stop_loss:
-                self._close(trade, current_price, current_time, "stopped")
+            if hi >= trade.stop_loss:
+                self._close(trade, trade.stop_loss, current_time, "stopped")
                 return True
-            if current_price <= trade.take_profit:
-                self._close(trade, current_price, current_time, "tp_hit")
+            if lo <= trade.take_profit:
+                self._close(trade, trade.take_profit, current_time, "tp_hit")
                 return True
         return False
 

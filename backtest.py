@@ -37,8 +37,10 @@ def run_backtest(data: dict = None, verbose: bool = False) -> dict:
     print("-" * 65)
 
     for i in range(WARMUP_BARS, len(df_5m)):
-        ts     = df_5m.index[i]
-        price  = df_5m["close"].iloc[i]
+        ts        = df_5m.index[i]
+        price     = df_5m["close"].iloc[i]
+        bar_high  = df_5m["high"].iloc[i]
+        bar_low   = df_5m["low"].iloc[i]
 
         # Build slices up to current bar
         slice_5m  = df_5m.iloc[:i + 1]
@@ -56,7 +58,7 @@ def run_backtest(data: dict = None, verbose: bool = False) -> dict:
         closed_this_bar = []
         for trade in list(rm.open_trades):
             rm.update_trailing_stop(trade, price, atr_now)
-            if rm.check_close(trade, price, ts):
+            if rm.check_close(trade, price, ts, bar_high, bar_low):
                 closed_this_bar.append(trade)
                 if verbose:
                     pnl_str = f"+{trade.pnl:.2f}" if trade.pnl > 0 else f"{trade.pnl:.2f}"
