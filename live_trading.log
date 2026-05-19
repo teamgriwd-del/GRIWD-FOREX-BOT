@@ -1,0 +1,242 @@
+2026-05-04 11:23:31,795  INFO     =================================================================
+2026-05-04 11:23:31,796  INFO       CTCFx LIVE TRADING ENGINE — MULTI-SYMBOL
+2026-05-04 11:23:31,796  INFO       *** DRY RUN — signals only, no real orders ***
+2026-05-04 11:23:31,796  INFO       Symbols  : ['FX Vol 20', 'FX Vol 40', 'FX Vol 60', 'FX Vol 80', 'FX Vol 99', 'SFX Vol 20', 'SFX Vol 40', 'SFX Vol 60', 'SFX Vol 80', 'SFX Vol 99']
+2026-05-04 11:23:31,796  INFO       Interval : 60s
+2026-05-04 11:23:31,796  INFO       Max trades per symbol: 1
+2026-05-04 11:23:31,797  INFO       Max total trades     : 3
+2026-05-04 11:23:31,800  INFO     =================================================================
+2026-05-04 11:23:31,801  INFO       Account  : 200.00 USD
+2026-05-04 11:23:31,802  INFO     --- Scan cycle | balance=$200.00  open=0/3 ---
+2026-05-04 11:23:44,026  INFO       [FX Vol 40] SIGNAL SELL  score=3  RR=2.00  entry=118738.29000  SL=119088.50143  TP=118037.86714
+2026-05-04 11:23:44,026  INFO         reasons : 1h trend: downtrend | Candle: Bearish Engulfing
+2026-05-04 11:23:44,026  INFO         candle  : Bearish Engulfing
+2026-05-04 11:23:44,027  INFO       [FX Vol 40] [DRY RUN] SELL 0.01 lots  SL=119088.50143  TP=118037.86714
+2026-05-04 11:24:14,237  INFO       [SFX Vol 99] SIGNAL SELL  score=3  RR=2.00  entry=4197.51000  SL=4239.26143  TP=4114.00714
+2026-05-04 11:24:14,237  INFO         reasons : 1h trend: downtrend | 15m BOS: bearish_bos
+2026-05-04 11:24:14,237  INFO       [SFX Vol 99] [DRY RUN] SELL 0.05 lots  SL=4239.26143  TP=4114.00714
+2026-05-04 11:25:14,239  INFO     --- Scan cycle | balance=$200.00  open=0/3 ---
+2026-05-04 11:25:14,635  INFO       [SFX Vol 60] SIGNAL BUY  score=3  RR=2.00  entry=288394.23000  SL=287188.15286  TP=290806.38429
+2026-05-04 11:25:14,636  INFO         reasons : 1h trend: uptrend | 15m BOS: bullish_bos
+2026-05-04 11:25:14,636  INFO       [SFX Vol 60] [DRY RUN] BUY 0.01 lots  SL=287188.15286  TP=290806.38429
+2026-05-04 11:26:14,736  INFO     --- Scan cycle | balance=$200.00  open=0/3 ---
+2026-05-04 11:26:14,880  INFO       [FX Vol 60] SIGNAL SELL  score=3  RR=2.00  entry=38024.84000  SL=38172.17750  TP=37730.16500
+2026-05-04 11:26:14,881  INFO         reasons : 1h trend: downtrend | 15m BOS: bearish_bos
+2026-05-04 11:26:14,881  INFO       [FX Vol 60] [DRY RUN] SELL 0.01 lots  SL=38172.17750  TP=37730.16500
+2026-05-04 11:26:15,126  INFO       [SFX Vol 60] SIGNAL BUY  score=4  RR=2.00  entry=290469.21000  SL=289012.85893  TP=293381.91214
+2026-05-04 11:26:15,126  INFO         reasons : 1h trend: uptrend | 15m BOS: bullish_bos | Candle: Morning Star
+2026-05-04 11:26:15,126  INFO         candle  : Morning Star
+2026-05-04 11:26:15,126  INFO       [SFX Vol 60] [DRY RUN] BUY 0.01 lots  SL=289012.85893  TP=293381.91214
+2026-05-04 11:26:15,225  INFO       [SFX Vol 99] SIGNAL SELL  score=4  RR=2.00  entry=4152.94000  SL=4198.89571  TP=4061.02857
+2026-05-04 11:26:15,226  INFO         reasons : 1h trend: downtrend | 15m BOS: bearish_bos | Candle: Tweezer Top
+2026-05-04 11:26:15,226  INFO         candle  : Tweezer Top
+2026-05-04 11:26:15,226  INFO       [SFX Vol 99] [DRY RUN] SELL 0.04 lots  SL=4198.89571  TP=4061.02857
+2026-05-04 11:27:15,228  INFO     --- Scan cycle | balance=$200.00  open=0/3 ---
+2026-05-04 11:27:15,380  INFO       [FX Vol 60] SIGNAL SELL  score=3  RR=2.00  entry=38010.58000  SL=38160.63250  TP=37710.47500
+2026-05-04 11:27:15,380  INFO         reasons : 1h trend: downtrend | 15m BOS: bearish_bos
+2026-05-04 11:27:15,380  INFO       [FX Vol 60] [DRY RUN] SELL 0.01 lots  SL=38160.63250  TP=37710.47500
+2026-05-04 11:27:15,626  INFO       [SFX Vol 60] SIGNAL BUY  score=4  RR=2.00  entry=290853.41000  SL=289379.77571  TP=293800.67857
+2026-05-04 11:27:15,626  INFO         reasons : 1h trend: uptrend | 15m BOS: bullish_bos | Candle: Morning Star
+2026-05-04 11:27:15,626  INFO         candle  : Morning Star
+2026-05-04 11:27:15,626  INFO       [SFX Vol 60] [DRY RUN] BUY 0.01 lots  SL=289379.77571  TP=293800.67857
+2026-05-04 11:29:25,154  INFO     =================================================================
+2026-05-04 11:29:25,155  INFO       CTCFx LIVE TRADING ENGINE — MULTI-SYMBOL
+2026-05-04 11:29:25,155  INFO       Symbols  : ['FX Vol 20', 'FX Vol 40', 'FX Vol 60', 'FX Vol 80', 'FX Vol 99', 'SFX Vol 20', 'SFX Vol 40', 'SFX Vol 60', 'SFX Vol 80', 'SFX Vol 99']
+2026-05-04 11:29:25,155  INFO       Interval : 60s
+2026-05-04 11:29:25,156  INFO       Max trades per symbol: 1
+2026-05-04 11:29:25,156  INFO       Max total trades     : 3
+2026-05-04 11:29:25,156  INFO     =================================================================
+2026-05-04 11:29:25,156  INFO       Account  : 200.00 USD
+2026-05-04 11:29:25,158  INFO     --- Scan cycle | balance=$200.00  open=0/3 ---
+2026-05-04 11:29:25,331  INFO       [FX Vol 60] SIGNAL SELL  score=3  RR=2.00  entry=38039.29000  SL=38189.34250  TP=37739.18500
+2026-05-04 11:29:25,331  INFO         reasons : 1h trend: downtrend | 15m BOS: bearish_bos
+2026-05-04 11:29:25,605  INFO       [SFX Vol 60] SIGNAL BUY  score=4  RR=2.00  entry=291014.05000  SL=289525.03321  TP=293992.08357
+2026-05-04 11:29:25,606  INFO         reasons : 1h trend: uptrend | 15m BOS: bullish_bos | Candle: Morning Star
+2026-05-04 11:29:25,606  INFO         candle  : Morning Star
+2026-05-04 11:29:50,201  INFO     =================================================================
+2026-05-04 11:29:50,201  INFO       CTCFx LIVE TRADING ENGINE — MULTI-SYMBOL
+2026-05-04 11:29:50,202  INFO       Symbols  : ['FX Vol 20', 'FX Vol 40', 'FX Vol 60', 'FX Vol 80', 'FX Vol 99', 'SFX Vol 20', 'SFX Vol 40', 'SFX Vol 60', 'SFX Vol 80', 'SFX Vol 99']
+2026-05-04 11:29:50,202  INFO       Interval : 60s
+2026-05-04 11:29:50,202  INFO       Max trades per symbol: 1
+2026-05-04 11:29:50,202  INFO       Max total trades     : 3
+2026-05-04 11:29:50,203  INFO     =================================================================
+2026-05-04 11:29:50,203  INFO       Account  : 200.00 USD
+2026-05-04 11:29:50,204  INFO     --- Scan cycle | balance=$200.00  open=0/3 ---
+2026-05-04 11:29:50,409  INFO       [FX Vol 60] SIGNAL SELL  score=3  RR=2.00  entry=38039.29000  SL=38189.34250  TP=37739.18500
+2026-05-04 11:29:50,409  INFO         reasons : 1h trend: downtrend | 15m BOS: bearish_bos
+2026-05-04 11:29:50,687  INFO       [SFX Vol 60] SIGNAL BUY  score=4  RR=2.00  entry=291014.05000  SL=289525.03321  TP=293992.08357
+2026-05-04 11:29:50,687  INFO         reasons : 1h trend: uptrend | 15m BOS: bullish_bos | Candle: Morning Star
+2026-05-04 11:29:50,688  INFO         candle  : Morning Star
+2026-05-04 11:30:50,815  INFO     --- Scan cycle | balance=$200.00  open=0/3 ---
+2026-05-04 11:30:51,205  INFO       [FX Vol 40] SIGNAL SELL  score=3  RR=2.00  entry=118696.98000  SL=119045.02929  TP=118000.88143
+2026-05-04 11:30:51,205  INFO         reasons : 1h trend: downtrend | Candle: Bearish Harami
+2026-05-04 11:30:51,206  INFO         candle  : Bearish Harami
+2026-05-04 11:30:51,909  INFO       [SFX Vol 60] SIGNAL BUY  score=3  RR=2.00  entry=290785.44000  SL=289290.96857  TP=293774.38286
+2026-05-04 11:30:51,909  INFO         reasons : 1h trend: uptrend | 15m BOS: bullish_bos
+2026-05-04 11:31:28,174  INFO     =================================================================
+2026-05-04 11:31:28,175  INFO       CTCFx LIVE TRADING ENGINE — MULTI-SYMBOL
+2026-05-04 11:31:28,175  INFO       Symbols  : ['FX Vol 20', 'FX Vol 40', 'FX Vol 60', 'FX Vol 80', 'FX Vol 99', 'SFX Vol 20', 'SFX Vol 40', 'SFX Vol 60', 'SFX Vol 80', 'SFX Vol 99']
+2026-05-04 11:31:28,175  INFO       Interval : 60s
+2026-05-04 11:31:28,175  INFO       Max trades per symbol: 1
+2026-05-04 11:31:28,176  INFO       Max total trades     : 3
+2026-05-04 11:31:28,176  INFO     =================================================================
+2026-05-04 11:31:28,176  INFO       Account  : 200.00 USD
+2026-05-04 11:31:28,177  INFO     --- Scan cycle | balance=$200.00  open=0/3 ---
+2026-05-04 11:31:28,801  INFO       [SFX Vol 99] SIGNAL SELL  score=3  RR=2.00  entry=4157.19000  SL=4199.01857  TP=4073.53286
+2026-05-04 11:31:28,802  INFO         reasons : 1h trend: downtrend | 15m BOS: bearish_bos
+2026-05-04 11:32:37,311  INFO       [SFX Vol 99] Trail SL DOWN ticket=353029001  sl=4195.28071
+2026-05-04 11:32:37,328  INFO     --- Scan cycle | balance=$200.00  open=1/3 ---
+2026-05-04 11:32:37,479  INFO       [FX Vol 40] SIGNAL SELL  score=3  RR=2.00  entry=118739.71000  SL=119098.61071  TP=118021.90857
+2026-05-04 11:32:37,480  INFO         reasons : 1h trend: downtrend | Candle: Bearish Harami
+2026-05-04 11:32:37,480  INFO         candle  : Bearish Harami
+2026-05-04 11:32:39,606  INFO       [SFX Vol 60] SIGNAL BUY  score=3  RR=2.00  entry=290182.36000  SL=288631.82929  TP=293283.42143
+2026-05-04 11:32:39,607  INFO         reasons : 1h trend: uptrend | 15m BOS: bullish_bos
+2026-05-04 11:33:43,271  INFO       [FX Vol 40] Trail SL DOWN ticket=353029744  sl=119001.23214
+2026-05-04 11:33:43,509  INFO       [SFX Vol 60] Trail SL UP  ticket=353029767  sl=289166.62786
+2026-05-04 11:33:45,231  INFO       [SFX Vol 99] Trail SL DOWN ticket=353029001  sl=4187.52571
+2026-05-04 11:33:45,231  INFO     --- Scan cycle | balance=$200.00  open=3/3 ---
+2026-05-04 11:34:46,054  INFO       [SFX Vol 60] Trail SL UP  ticket=353029767  sl=289438.62786
+2026-05-04 11:34:46,055  INFO     --- Scan cycle | balance=$200.00  open=3/3 ---
+2026-05-04 11:35:46,057  INFO     --- Scan cycle | balance=$200.00  open=3/3 ---
+2026-05-04 11:36:46,059  INFO     --- Scan cycle | balance=$200.00  open=3/3 ---
+2026-05-04 11:37:46,061  INFO       [SFX Vol 60] Position closed by MT5: ticket=353029767 dir=buy
+2026-05-04 11:37:46,062  INFO     --- Scan cycle | balance=$191.45  open=2/3 ---
+2026-05-04 11:38:46,520  INFO     --- Scan cycle | balance=$191.45  open=2/3 ---
+2026-05-04 11:39:46,963  INFO     --- Scan cycle | balance=$191.45  open=2/3 ---
+2026-05-04 11:40:47,382  INFO     --- Scan cycle | balance=$191.45  open=2/3 ---
+2026-05-04 11:41:48,504  INFO       [SFX Vol 99] Trail SL DOWN ticket=353029001  sl=4186.98571
+2026-05-04 11:41:48,505  INFO     --- Scan cycle | balance=$191.45  open=2/3 ---
+2026-05-04 11:41:48,874  INFO       [SFX Vol 60] SIGNAL BUY  score=4  RR=2.00  entry=288700.00000  SL=287037.72786  TP=292024.54429
+2026-05-04 11:41:48,875  INFO         reasons : 1h trend: uptrend | 15m BOS: bullish_bos | Candle: Bullish Harami
+2026-05-04 11:41:48,875  INFO         candle  : Bullish Harami
+2026-05-04 11:43:15,851  INFO     --- Scan cycle | balance=$191.45  open=3/3 ---
+2026-05-04 11:44:15,854  INFO     --- Scan cycle | balance=$191.45  open=3/3 ---
+2026-05-04 11:45:15,857  INFO     --- Scan cycle | balance=$191.45  open=3/3 ---
+2026-05-04 11:46:15,860  INFO     --- Scan cycle | balance=$191.45  open=3/3 ---
+2026-05-04 11:47:15,863  INFO     --- Scan cycle | balance=$191.45  open=3/3 ---
+2026-05-04 11:48:15,867  INFO     --- Scan cycle | balance=$191.45  open=3/3 ---
+2026-05-04 11:49:15,871  INFO     --- Scan cycle | balance=$191.45  open=3/3 ---
+2026-05-04 11:50:16,189  INFO       [FX Vol 40] Trail SL DOWN ticket=353029744  sl=118910.56214
+2026-05-04 11:50:16,482  INFO       [SFX Vol 60] Trail SL UP  ticket=353036076  sl=287834.13857
+2026-05-04 11:50:16,482  INFO     --- Scan cycle | balance=$191.45  open=3/3 ---
+2026-05-04 11:51:16,816  INFO       [FX Vol 40] Trail SL DOWN ticket=353029744  sl=118848.51214
+2026-05-04 11:51:17,126  INFO       [SFX Vol 60] Trail SL UP  ticket=353036076  sl=288288.90357
+2026-05-04 11:51:17,127  INFO     --- Scan cycle | balance=$191.45  open=3/3 ---
+2026-05-04 11:52:17,542  INFO       [SFX Vol 60] Trail SL UP  ticket=353036076  sl=288659.15857
+2026-05-04 11:52:17,543  INFO     --- Scan cycle | balance=$191.45  open=3/3 ---
+2026-05-04 11:53:17,546  INFO     --- Scan cycle | balance=$191.45  open=3/3 ---
+2026-05-04 11:54:17,775  INFO       [SFX Vol 60] Trail SL UP  ticket=353036076  sl=288787.67357
+2026-05-04 11:54:18,267  INFO       [SFX Vol 99] Trail SL DOWN ticket=353029001  sl=4185.90571
+2026-05-04 11:54:18,268  INFO     --- Scan cycle | balance=$191.45  open=3/3 ---
+2026-05-04 11:55:18,269  INFO       [FX Vol 40] Position closed by MT5: ticket=353029744 dir=sell
+2026-05-04 11:55:18,271  INFO     --- Scan cycle | balance=$190.20  open=2/3 ---
+2026-05-04 11:56:19,042  INFO     --- Scan cycle | balance=$190.20  open=2/3 ---
+2026-05-04 11:56:19,200  INFO       [FX Vol 60] SIGNAL SELL  score=3  RR=2.00  entry=38190.95000  SL=38335.74500  TP=37901.36000
+2026-05-04 11:56:19,201  INFO         reasons : 1h trend: downtrend | Candle: Bearish Harami
+2026-05-04 11:56:19,201  INFO         candle  : Bearish Harami
+2026-05-04 11:57:19,918  INFO       [FX Vol 60] Trail SL DOWN ticket=353046214  sl=38306.47000
+2026-05-04 11:57:20,338  INFO       [SFX Vol 60] Trail SL UP  ticket=353036076  sl=288996.42857
+2026-05-04 11:57:20,339  INFO     --- Scan cycle | balance=$190.20  open=3/3 ---
+2026-05-04 11:58:21,789  INFO       [FX Vol 60] Trail SL DOWN ticket=353046214  sl=38287.15000
+2026-05-04 11:58:22,406  INFO       [SFX Vol 60] Trail SL UP  ticket=353036076  sl=289054.83857
+2026-05-04 11:58:22,407  INFO     --- Scan cycle | balance=$190.20  open=3/3 ---
+2026-05-04 11:59:22,409  INFO     --- Scan cycle | balance=$190.20  open=3/3 ---
+2026-05-04 12:00:22,411  INFO     --- Scan cycle | balance=$190.20  open=3/3 ---
+2026-05-04 12:01:23,653  INFO       [FX Vol 60] Trail SL DOWN ticket=353046214  sl=38280.59000
+2026-05-04 12:01:23,654  INFO     --- Scan cycle | balance=$190.20  open=3/3 ---
+2026-05-04 12:02:24,260  INFO       [FX Vol 60] Trail SL DOWN ticket=353046214  sl=38266.52000
+2026-05-04 12:02:24,261  INFO     --- Scan cycle | balance=$190.20  open=3/3 ---
+2026-05-04 12:03:24,799  INFO       [FX Vol 60] Trail SL DOWN ticket=353046214  sl=38240.10000
+2026-05-04 12:03:25,088  INFO       [SFX Vol 60] Trail SL UP  ticket=353036076  sl=289227.06857
+2026-05-04 12:03:25,089  INFO     --- Scan cycle | balance=$190.20  open=3/3 ---
+2026-05-04 12:04:25,403  INFO       [FX Vol 60] Trail SL DOWN ticket=353046214  sl=38235.10000
+2026-05-04 12:04:25,404  INFO     --- Scan cycle | balance=$190.20  open=3/3 ---
+2026-05-04 12:05:25,738  INFO       [SFX Vol 60] Trail SL UP  ticket=353036076  sl=289245.42357
+2026-05-04 12:05:25,739  INFO     --- Scan cycle | balance=$190.20  open=3/3 ---
+2026-05-04 12:06:26,012  INFO       [SFX Vol 99] Trail SL DOWN ticket=353029001  sl=4173.33571
+2026-05-04 12:06:26,013  INFO     --- Scan cycle | balance=$190.20  open=3/3 ---
+2026-05-04 12:07:26,370  INFO       [SFX Vol 99] Trail SL DOWN ticket=353029001  sl=4169.55071
+2026-05-04 12:07:26,371  INFO     --- Scan cycle | balance=$190.20  open=3/3 ---
+2026-05-04 12:08:26,781  INFO       [FX Vol 60] Trail SL DOWN ticket=353046214  sl=38216.67500
+2026-05-04 12:08:26,782  INFO     --- Scan cycle | balance=$190.20  open=3/3 ---
+2026-05-04 12:09:27,424  INFO       [FX Vol 60] Trail SL DOWN ticket=353046214  sl=38182.87500
+2026-05-04 12:09:27,425  INFO     --- Scan cycle | balance=$190.20  open=3/3 ---
+2026-05-04 12:10:27,427  INFO     --- Scan cycle | balance=$190.20  open=3/3 ---
+2026-05-04 12:11:27,429  INFO       [SFX Vol 60] Position closed by MT5: ticket=353036076 dir=buy
+2026-05-04 12:11:27,844  INFO       [FX Vol 60] Trail SL DOWN ticket=353046214  sl=38176.55500
+2026-05-04 12:11:27,845  INFO     --- Scan cycle | balance=$194.82  open=2/3 ---
+2026-05-04 12:11:27,984  INFO       [FX Vol 40] SIGNAL SELL  score=3  RR=2.00  entry=118888.73000  SL=119198.30321  TP=118269.58357
+2026-05-04 12:11:27,985  INFO         reasons : 1h trend: downtrend | Liquidity sweep: highs
+2026-05-04 12:12:28,730  INFO       [FX Vol 40] Trail SL DOWN ticket=353062503  sl=119156.56214
+2026-05-04 12:12:28,948  INFO       [FX Vol 60] Trail SL DOWN ticket=353046214  sl=38155.23500
+2026-05-04 12:12:29,589  INFO       [SFX Vol 99] Trail SL DOWN ticket=353029001  sl=4169.33571
+2026-05-04 12:12:29,590  INFO     --- Scan cycle | balance=$194.82  open=3/3 ---
+2026-05-04 12:13:29,880  INFO       [FX Vol 40] Trail SL DOWN ticket=353062503  sl=119086.15714
+2026-05-04 12:13:30,099  INFO       [FX Vol 60] Trail SL DOWN ticket=353046214  sl=38130.82500
+2026-05-04 12:13:30,100  INFO     --- Scan cycle | balance=$194.82  open=3/3 ---
+2026-05-04 12:14:30,543  INFO       [FX Vol 40] Trail SL DOWN ticket=353062503  sl=119028.40714
+2026-05-04 12:14:30,759  INFO       [FX Vol 60] Trail SL DOWN ticket=353046214  sl=38112.61000
+2026-05-04 12:14:30,981  INFO       [SFX Vol 99] Trail SL DOWN ticket=353029001  sl=4163.61071
+2026-05-04 12:14:30,982  INFO     --- Scan cycle | balance=$194.82  open=3/3 ---
+2026-05-04 12:15:30,983  INFO       [SFX Vol 99] Position closed by MT5: ticket=353029001 dir=sell
+2026-05-04 12:15:31,247  INFO       [FX Vol 40] Trail SL DOWN ticket=353062503  sl=118996.42214
+2026-05-04 12:15:31,248  INFO     --- Scan cycle | balance=$193.11  open=2/3 ---
+2026-05-04 12:15:31,608  INFO       [SFX Vol 60] SIGNAL BUY  score=3  RR=2.00  entry=289668.69000  SL=288172.11000  TP=292661.85000
+2026-05-04 12:15:31,608  INFO         reasons : 1h trend: uptrend | 15m BOS: bullish_bos
+2026-05-04 12:16:32,270  INFO       [FX Vol 40] Trail SL DOWN ticket=353062503  sl=118989.56214
+2026-05-04 12:16:32,577  INFO       [SFX Vol 60] Trail SL UP  ticket=353066051  sl=288554.70500
+2026-05-04 12:16:32,577  INFO     --- Scan cycle | balance=$193.11  open=3/3 ---
+2026-05-04 12:17:32,818  INFO       [FX Vol 40] Trail SL DOWN ticket=353062503  sl=118904.43714
+2026-05-04 12:17:33,050  INFO       [FX Vol 60] Trail SL DOWN ticket=353046214  sl=38100.77000
+2026-05-04 12:17:33,051  INFO     --- Scan cycle | balance=$193.11  open=3/3 ---
+2026-05-04 12:18:33,619  INFO       [FX Vol 40] Trail SL DOWN ticket=353062503  sl=118884.54714
+2026-05-04 12:18:33,620  INFO     --- Scan cycle | balance=$193.11  open=3/3 ---
+2026-05-04 12:19:33,623  INFO     --- Scan cycle | balance=$193.11  open=3/3 ---
+2026-05-04 12:20:33,625  INFO       [FX Vol 60] Position closed by MT5: ticket=353046214 dir=sell
+2026-05-04 12:20:33,627  INFO     --- Scan cycle | balance=$194.00  open=2/3 ---
+2026-05-04 12:20:33,847  INFO       [FX Vol 99] SIGNAL SELL  score=4  RR=2.00  entry=38199.96000  SL=38488.03179  TP=37623.81643
+2026-05-04 12:20:33,847  INFO         reasons : 1h trend: downtrend | 15m BOS: bearish_bos | Candle: Bearish Engulfing
+2026-05-04 12:20:33,848  INFO         candle  : Bearish Engulfing
+2026-05-04 12:21:34,208  INFO       [SFX Vol 60] Position closed by MT5: ticket=353066051 dir=buy
+2026-05-04 12:21:34,768  INFO       [FX Vol 99] Trail SL DOWN ticket=353070261  sl=38420.70786
+2026-05-04 12:21:34,770  INFO     --- Scan cycle | balance=$181.60  open=2/3 ---
+2026-05-04 12:21:35,094  INFO       [SFX Vol 60] SIGNAL BUY  score=3  RR=2.00  entry=288478.32000  SL=286949.14500  TP=291536.67000
+2026-05-04 12:21:35,095  INFO         reasons : 1h trend: uptrend | 15m BOS: bullish_bos
+2026-05-04 12:22:35,915  INFO       [FX Vol 99] Trail SL DOWN ticket=353070261  sl=38334.51786
+2026-05-04 12:22:36,302  INFO       [SFX Vol 60] Trail SL UP  ticket=353071636  sl=287304.00500
+2026-05-04 12:22:36,303  INFO     --- Scan cycle | balance=$181.60  open=3/3 ---
+2026-05-04 12:23:36,628  INFO       [FX Vol 99] Trail SL DOWN ticket=353070261  sl=38333.53786
+2026-05-04 12:23:36,629  INFO     --- Scan cycle | balance=$181.60  open=3/3 ---
+2026-05-04 12:24:36,631  INFO     --- Scan cycle | balance=$181.60  open=3/3 ---
+2026-05-04 12:25:36,634  INFO     --- Scan cycle | balance=$181.60  open=3/3 ---
+2026-05-04 12:26:36,638  INFO     --- Scan cycle | balance=$181.60  open=3/3 ---
+2026-05-04 12:27:36,640  INFO     --- Scan cycle | balance=$181.60  open=3/3 ---
+2026-05-04 12:28:36,643  INFO     --- Scan cycle | balance=$181.60  open=3/3 ---
+2026-05-04 12:29:36,646  INFO     --- Scan cycle | balance=$181.60  open=3/3 ---
+2026-05-04 12:30:36,648  INFO       [FX Vol 99] Position closed by MT5: ticket=353070261 dir=sell
+2026-05-04 12:30:36,649  INFO     --- Scan cycle | balance=$180.20  open=2/3 ---
+2026-05-04 12:31:37,190  INFO     --- Scan cycle | balance=$180.20  open=2/3 ---
+2026-05-04 12:32:37,630  INFO       [FX Vol 40] Position closed by MT5: ticket=353062503 dir=sell
+2026-05-04 12:32:37,632  INFO     --- Scan cycle | balance=$180.17  open=1/3 ---
+2026-05-04 12:32:37,742  INFO       [FX Vol 40] SIGNAL SELL  score=3  RR=2.00  entry=118831.13000  SL=119136.38964  TP=118220.61071
+2026-05-04 12:32:37,743  INFO         reasons : 1h trend: downtrend | Candle: Bearish Harami
+2026-05-04 12:32:37,743  INFO         candle  : Bearish Harami
+2026-05-04 12:32:38,086  INFO       [FX Vol 60] SIGNAL SELL  score=3  RR=2.00  entry=38214.29000  SL=38370.24714  TP=37902.37571
+2026-05-04 12:32:38,086  INFO         reasons : 1h trend: downtrend | Liquidity sweep: highs
+2026-05-04 12:33:38,869  INFO       [FX Vol 40] Trail SL DOWN ticket=353083818  sl=119035.70143
+2026-05-04 12:33:39,184  INFO       [FX Vol 60] Trail SL DOWN ticket=353083985  sl=38331.37643
+2026-05-04 12:33:39,185  INFO     --- Scan cycle | balance=$180.17  open=3/3 ---
+2026-05-04 12:34:39,688  INFO       [SFX Vol 60] Trail SL UP  ticket=353071636  sl=287609.75500
+2026-05-04 12:34:39,689  INFO     --- Scan cycle | balance=$180.17  open=3/3 ---
+2026-05-04 12:35:39,691  INFO     --- Scan cycle | balance=$180.17  open=3/3 ---
+2026-05-04 12:36:39,693  INFO       [FX Vol 60] Position closed by MT5: ticket=353083985 dir=sell
+2026-05-04 12:36:39,695  INFO     --- Scan cycle | balance=$179.00  open=2/3 ---
+2026-05-04 12:36:40,143  INFO       [SFX Vol 99] SIGNAL SELL  score=4  RR=2.00  entry=4176.52000  SL=4206.76857  TP=4116.02286
+2026-05-04 12:36:40,144  INFO         reasons : 1h trend: downtrend | 15m BOS: bearish_bos | Candle: Bearish Engulfing
+2026-05-04 12:36:40,144  INFO         candle  : Bearish Engulfing
+2026-05-04 12:37:40,747  INFO       [SFX Vol 99] Trail SL DOWN ticket=353087129  sl=4143.20571
+2026-05-04 12:37:40,747  INFO     --- Scan cycle | balance=$179.00  open=3/3 ---
+2026-05-04 12:38:40,749  INFO       [FX Vol 40] Position closed by MT5: ticket=353083818 dir=sell
+2026-05-04 12:38:40,750  INFO       [SFX Vol 99] Position closed by MT5: ticket=353087129 dir=sell
+2026-05-04 12:38:40,751  INFO     --- Scan cycle | balance=$177.79  open=1/3 ---
+2026-05-04 12:39:41,255  INFO     --- Scan cycle | balance=$177.79  open=1/3 ---
