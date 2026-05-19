@@ -1,5 +1,5 @@
 {
-  "total_trades": 1342,
+  "total_trades": 1348,
   "trades": [
     {
       "id": 1,
@@ -22261,6 +22261,108 @@
       "won": "False",
       "open_time": "2024-01-13 04:35:00",
       "close_time": "2024-01-13 05:40:00"
+    },
+    {
+      "id": 558,
+      "direction": "buy",
+      "pnl": -22.5646,
+      "status": "stopped",
+      "pattern": "Tweezer Bottom",
+      "chart_pattern": "",
+      "score": 3.0,
+      "reasons": [
+        "Price inside FVG",
+        "Candle: Tweezer Bottom",
+        "TL break: resistance"
+      ],
+      "won": "False",
+      "open_time": "2024-01-13 07:05:00",
+      "close_time": "2024-01-13 07:30:00"
+    },
+    {
+      "id": 559,
+      "direction": "buy",
+      "pnl": -30.9565,
+      "status": "stopped",
+      "pattern": "Tweezer Bottom",
+      "chart_pattern": "",
+      "score": 5.0,
+      "reasons": [
+        "1h trend: uptrend",
+        "15m BOS: bullish_bos",
+        "Candle: Tweezer Bottom",
+        "TL break: resistance"
+      ],
+      "won": "False",
+      "open_time": "2024-01-13 17:00:00",
+      "close_time": "2024-01-13 17:30:00"
+    },
+    {
+      "id": 560,
+      "direction": "buy",
+      "pnl": -32.7922,
+      "status": "stopped",
+      "pattern": "",
+      "chart_pattern": "",
+      "score": 4.0,
+      "reasons": [
+        "1h trend: uptrend",
+        "15m BOS: bullish_bos",
+        "TL break: resistance"
+      ],
+      "won": "False",
+      "open_time": "2024-01-13 17:05:00",
+      "close_time": "2024-01-13 17:30:00"
+    },
+    {
+      "id": 561,
+      "direction": "buy",
+      "pnl": -145.8157,
+      "status": "stopped",
+      "pattern": "",
+      "chart_pattern": "",
+      "score": 4.0,
+      "reasons": [
+        "1h trend: uptrend",
+        "15m BOS: bullish_bos",
+        "TL break: resistance"
+      ],
+      "won": "False",
+      "open_time": "2024-01-13 17:10:00",
+      "close_time": "2024-01-13 17:45:00"
+    },
+    {
+      "id": 562,
+      "direction": "buy",
+      "pnl": -144.922,
+      "status": "stopped",
+      "pattern": "",
+      "chart_pattern": "",
+      "score": 3.0,
+      "reasons": [
+        "1h trend: uptrend",
+        "TL break: resistance"
+      ],
+      "won": "False",
+      "open_time": "2024-01-13 17:30:00",
+      "close_time": "2024-01-13 17:45:00"
+    },
+    {
+      "id": 563,
+      "direction": "buy",
+      "pnl": -145.0641,
+      "status": "stopped",
+      "pattern": "Tweezer Bottom",
+      "chart_pattern": "",
+      "score": 4.0,
+      "reasons": [
+        "1h trend: uptrend",
+        "Candle: Tweezer Bottom",
+        "TL break: resistance"
+      ],
+      "won": "False",
+      "open_time": "2024-01-13 17:35:00",
+      "close_time": "2024-01-13 17:45:00"
     }
   ],
   "reason_stats": {
@@ -22281,8 +22383,8 @@
     },
     "15m BOS: bullish_bos": {
       "wins": 105,
-      "losses": 86,
-      "pnl": 2629.221
+      "losses": 89,
+      "pnl": 2419.6566
     },
     "Candle: Hammer": {
       "wins": 26,
@@ -22291,8 +22393,8 @@
     },
     "TL break: resistance": {
       "wins": 196,
-      "losses": 213,
-      "pnl": -1427.0741
+      "losses": 219,
+      "pnl": -1949.1892
     },
     "TL bounce: support": {
       "wins": 19,
@@ -22301,18 +22403,18 @@
     },
     "Price inside FVG": {
       "wins": 111,
-      "losses": 114,
-      "pnl": 2703.4407
+      "losses": 115,
+      "pnl": 2680.8761
     },
     "Candle: Tweezer Bottom": {
       "wins": 17,
-      "losses": 25,
-      "pnl": 1040.3515
+      "losses": 28,
+      "pnl": 841.7663
     },
     "1h trend: uptrend": {
       "wins": 282,
-      "losses": 374,
-      "pnl": -3055.6596
+      "losses": 379,
+      "pnl": -3555.2101
     },
     "Candle: Bullish Engulfing": {
       "wins": 10,
@@ -22398,8 +22500,8 @@
     },
     "Tweezer Bottom": {
       "wins": 17,
-      "losses": 25,
-      "pnl": 1040.3515
+      "losses": 28,
+      "pnl": 841.7663
     },
     "Bullish Engulfing": {
       "wins": 10,
@@ -22452,18 +22554,18 @@
   "score_stats": {
     "3": {
       "wins": 369,
-      "losses": 425,
-      "pnl": 3994.5617
+      "losses": 427,
+      "pnl": 3827.0751
     },
     "5": {
       "wins": 47,
-      "losses": 49,
-      "pnl": -416.9668
+      "losses": 50,
+      "pnl": -447.9233
     },
     "4": {
       "wins": 209,
-      "losses": 234,
-      "pnl": 3562.28
+      "losses": 237,
+      "pnl": 3238.608
     },
     "6": {
       "wins": 4,
