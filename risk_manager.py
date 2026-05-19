@@ -86,15 +86,17 @@ class RiskManager:
             return
         trail_dist = atr * TRAILING_ATR_MULT
         if trade.direction == "buy":
-            new_stop = current_price - trail_dist
-            if new_stop > trade.trailing_stop:
-                trade.trailing_stop = new_stop
-                trade.stop_loss = new_stop
+            if current_price > trade.entry:          # only trail once in profit
+                new_stop = current_price - trail_dist
+                if new_stop > trade.trailing_stop:
+                    trade.trailing_stop = new_stop
+                    trade.stop_loss = new_stop
         else:
-            new_stop = current_price + trail_dist
-            if new_stop < trade.trailing_stop or trade.trailing_stop == trade.stop_loss:
-                trade.trailing_stop = new_stop
-                trade.stop_loss = new_stop
+            if current_price < trade.entry:          # only trail once in profit
+                new_stop = current_price + trail_dist
+                if new_stop < trade.trailing_stop:
+                    trade.trailing_stop = new_stop
+                    trade.stop_loss = new_stop
 
     def check_close(self, trade: Trade, current_price: float,
                     current_time, bar_high: float = None,
