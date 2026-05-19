@@ -51,7 +51,10 @@ class TradeMemory:
     # ── Recording ─────────────────────────────────────────────────────────────
 
     def record_trade(self, trade) -> None:
-        """Record a closed trade and update adaptive weights every 5 trades."""
+        """Record a closed trade and update adaptive weights every 5 trades.
+        end_of_data closes are excluded — artificial P&L skews the learning."""
+        if trade.status == "end_of_data":
+            return
         won = trade.pnl > 0
         chart_pat = next(
             (r.replace("Chart:", "").strip() for r in trade.reasons
