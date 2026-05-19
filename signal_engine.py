@@ -15,7 +15,7 @@ import chart_patterns as chart_module
 import zone_detector as zd_module
 from config import (
     SIGNAL_THRESHOLD, SCORE_WEIGHTS, REWARD_RISK_RATIO,
-    TL_BOUNCE_TOLERANCE, TL_QUALITY_THRESHOLD,
+    TL_BOUNCE_TOLERANCE, TL_QUALITY_THRESHOLD, TL_BREAK_BUFFER,
     SWING_SL_BUFFER, MAX_SL_ATR, STOP_ATR_MULT,
 )
 
@@ -192,7 +192,7 @@ def generate_signal(data: dict, timestamp: pd.Timestamp = None,
             score += SCORE_WEIGHTS["equilibrium_zone"] * aw.get(r, 1.0)
             reasons.append(r)
 
-        # ── Trend-line signals ────────────────────────────────────────────────
+        # ── Trend-line signals (each signal type fires at most once per direction)
         for tl in zone_map.trend_lines:
             if tl.quality < TL_QUALITY_THRESHOLD:
                 continue
@@ -200,24 +200,26 @@ def generate_signal(data: dict, timestamp: pd.Timestamp = None,
             distance = abs(current_price - tl_price)
 
             if not tl.broken:
-                # Bounce: price is near an unbroken trend line on the right side
                 if distance <= atr_5m * TL_BOUNCE_TOLERANCE:
                     if direction == "buy" and tl.kind == "support_tl":
                         r = "TL bounce: support"
-                        score += SCORE_WEIGHTS.get("tl_bounce", 1) * aw.get(r, 1.0)
-                        reasons.append(r)
                     elif direction == "sell" and tl.kind == "resistance_tl":
                         r = "TL bounce: resistance"
+                    else:
+                        r = None
+                    if r and r not in reasons:
                         score += SCORE_WEIGHTS.get("tl_bounce", 1) * aw.get(r, 1.0)
                         reasons.append(r)
             else:
-                # Break: momentum entry after price crossed through the line
-                if direction == "buy" and tl.kind == "resistance_tl" and current_price > tl_price:
+                # Require price to be meaningfully beyond the line (anti-fakeout buffer)
+                break_min = atr_5m * TL_BREAK_BUFFER
+                if direction == "buy" and tl.kind == "resistance_tl" and current_price > tl_price + break_min:
                     r = "TL break: resistance"
-                    score += SCORE_WEIGHTS.get("tl_break", 1) * aw.get(r, 1.0)
-                    reasons.append(r)
-                elif direction == "sell" and tl.kind == "support_tl" and current_price < tl_price:
+                elif direction == "sell" and tl.kind == "support_tl" and current_price < tl_price - break_min:
                     r = "TL break: support"
+                else:
+                    r = None
+                if r and r not in reasons:
                     score += SCORE_WEIGHTS.get("tl_break", 1) * aw.get(r, 1.0)
                     reasons.append(r)
 
@@ -229,10 +231,11 @@ def generate_signal(data: dict, timestamp: pd.Timestamp = None,
             direction, current_price, atr_5m, ms_5m
         )
 
-        # Override with chart-pattern levels when available
+        # Override SL/TP with chart-pattern levels only when memory trusts the pattern
         if chart_ok:
-            cs_ref = bull_charts[0] if direction == "buy" else bear_charts[0]
-            if cs_ref.confirmed:
+            cs_ref   = bull_charts[0] if direction == "buy" else bear_charts[0]
+            pat_mult = memory.get_pattern_mult("", cs_ref.pattern) if memory else 1.0
+            if cs_ref.confirmed and pat_mult >= 0.5:
                 stop_loss   = cs_ref.stop
                 take_profit = cs_ref.target
 

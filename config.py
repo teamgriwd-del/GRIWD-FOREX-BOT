@@ -54,6 +54,7 @@ SCORE_WEIGHTS = {
 # ── Trend Line Quality ────────────────────────────────────────────────────────
 TL_BOUNCE_TOLERANCE    = 0.4    # price must be within X * ATR of trend line
 TL_QUALITY_THRESHOLD   = 0.3    # min quality score (0-1) to use a trend line
+TL_BREAK_BUFFER        = 0.25   # price must be >= X * ATR beyond line to count as break
 
 # ── Adaptive Learning ─────────────────────────────────────────────────────────
 MEMORY_FILE            = "trade_memory.json"
