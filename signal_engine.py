@@ -131,7 +131,18 @@ def generate_signal(data: dict, timestamp: pd.Timestamp = None,
     # Adaptive weights from TradeMemory: reason_string → multiplier
     aw = memory.get_adaptive_weights() if memory else {}
 
+    # ── Macro trend filter via 50-period 1h EMA ───────────────────────────────
+    # Prevents selling into a bull market or buying into a bear market when the
+    # 1h swing-based classifier returns "unknown" instead of the true trend.
+    ema_1h = df_1h["close"].ewm(span=50, adjust=False).mean().iloc[-1]
+    price_above_ema = current_price > ema_1h
+
     for direction in ("buy", "sell"):
+        # Block counter-EMA entries unless swing structure confirms the direction
+        if direction == "sell" and price_above_ema and ms_1h.trend != "downtrend":
+            continue
+        if direction == "buy" and not price_above_ema and ms_1h.trend != "uptrend":
+            continue
         cs_dir      = "bullish" if direction == "buy" else "bearish"
         ms_trend_ok = (ms_1h.trend == "uptrend"        if direction == "buy"
                        else ms_1h.trend == "downtrend")
