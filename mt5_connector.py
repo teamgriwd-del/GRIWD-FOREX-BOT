@@ -78,13 +78,14 @@ def account_info() -> dict:
     if info is None:
         return {}
     return {
-        "balance" : info.balance,
-        "equity"  : info.equity,
-        "margin"  : info.margin,
+        "balance"    : info.balance,
+        "equity"     : info.equity,
+        "margin"     : info.margin,
         "free_margin": info.margin_free,
-        "profit"  : info.profit,
-        "currency": info.currency,
-        "leverage": info.leverage,
+        "profit"     : info.profit,
+        "currency"   : info.currency,
+        "leverage"   : info.leverage,
+        "trade_mode" : info.trade_mode,   # 0=demo, 1=real/live
     }
 
 
