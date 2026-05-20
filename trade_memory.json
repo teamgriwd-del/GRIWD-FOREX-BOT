@@ -1,5 +1,5 @@
 {
-  "total_trades": 1,
+  "total_trades": 15,
   "trades": [
     {
       "id": 1,
@@ -17,6 +17,235 @@
       "won": "False",
       "open_time": "2024-01-01 10:00:00",
       "close_time": "2024-01-01 10:20:00"
+    },
+    {
+      "id": 2,
+      "direction": "buy",
+      "pnl": 28.0363,
+      "status": "stopped",
+      "pattern": "Hammer",
+      "chart_pattern": "",
+      "score": 3.0,
+      "reasons": [
+        "15m BOS: bullish_bos",
+        "Candle: Hammer",
+        "TL break: resistance"
+      ],
+      "won": "True",
+      "open_time": "2024-01-02 07:30:00",
+      "close_time": "2024-01-02 07:55:00"
+    },
+    {
+      "id": 3,
+      "direction": "buy",
+      "pnl": -100.1165,
+      "status": "stopped",
+      "pattern": "",
+      "chart_pattern": "",
+      "score": 3.0,
+      "reasons": [
+        "15m BOS: bullish_bos",
+        "TL bounce: support",
+        "TL break: resistance"
+      ],
+      "won": "False",
+      "open_time": "2024-01-02 07:55:00",
+      "close_time": "2024-01-02 08:35:00"
+    },
+    {
+      "id": 4,
+      "direction": "buy",
+      "pnl": 198.5616,
+      "status": "tp_hit",
+      "pattern": "Tweezer Bottom",
+      "chart_pattern": "",
+      "score": 3.0,
+      "reasons": [
+        "Price inside FVG",
+        "Candle: Tweezer Bottom",
+        "TL break: resistance"
+      ],
+      "won": "True",
+      "open_time": "2024-01-02 10:40:00",
+      "close_time": "2024-01-02 10:50:00"
+    },
+    {
+      "id": 5,
+      "direction": "buy",
+      "pnl": 46.0195,
+      "status": "stopped",
+      "pattern": "Hammer",
+      "chart_pattern": "",
+      "score": 3.0,
+      "reasons": [
+        "Price inside FVG",
+        "Candle: Hammer",
+        "TL break: resistance"
+      ],
+      "won": "True",
+      "open_time": "2024-01-02 11:25:00",
+      "close_time": "2024-01-02 11:45:00"
+    },
+    {
+      "id": 6,
+      "direction": "buy",
+      "pnl": -101.7462,
+      "status": "stopped",
+      "pattern": "Tweezer Bottom",
+      "chart_pattern": "",
+      "score": 3.0,
+      "reasons": [
+        "Price inside FVG",
+        "Candle: Tweezer Bottom",
+        "TL break: resistance"
+      ],
+      "won": "False",
+      "open_time": "2024-01-02 11:50:00",
+      "close_time": "2024-01-02 12:30:00"
+    },
+    {
+      "id": 7,
+      "direction": "buy",
+      "pnl": -3.024,
+      "status": "stopped",
+      "pattern": "",
+      "chart_pattern": "",
+      "score": 3.0,
+      "reasons": [
+        "1h trend: uptrend",
+        "15m BOS: bullish_bos"
+      ],
+      "won": "False",
+      "open_time": "2024-01-02 17:15:00",
+      "close_time": "2024-01-02 17:25:00"
+    },
+    {
+      "id": 8,
+      "direction": "buy",
+      "pnl": -100.5677,
+      "status": "stopped",
+      "pattern": "",
+      "chart_pattern": "",
+      "score": 3.0,
+      "reasons": [
+        "1h trend: uptrend",
+        "15m BOS: bullish_bos"
+      ],
+      "won": "False",
+      "open_time": "2024-01-02 17:20:00",
+      "close_time": "2024-01-02 17:35:00"
+    },
+    {
+      "id": 9,
+      "direction": "buy",
+      "pnl": -100.7831,
+      "status": "stopped",
+      "pattern": "",
+      "chart_pattern": "",
+      "score": 3.0,
+      "reasons": [
+        "1h trend: uptrend",
+        "15m BOS: bullish_bos"
+      ],
+      "won": "False",
+      "open_time": "2024-01-02 17:25:00",
+      "close_time": "2024-01-02 17:40:00"
+    },
+    {
+      "id": 12,
+      "direction": "buy",
+      "pnl": -11.2666,
+      "status": "stopped",
+      "pattern": "",
+      "chart_pattern": "",
+      "score": 3.0,
+      "reasons": [
+        "1h trend: uptrend",
+        "TL bounce: support"
+      ],
+      "won": "False",
+      "open_time": "2024-01-02 18:05:00",
+      "close_time": "2024-01-02 18:40:00"
+    },
+    {
+      "id": 11,
+      "direction": "buy",
+      "pnl": -12.5716,
+      "status": "stopped",
+      "pattern": "Hammer",
+      "chart_pattern": "",
+      "score": 3.0,
+      "reasons": [
+        "1h trend: uptrend",
+        "Candle: Hammer"
+      ],
+      "won": "False",
+      "open_time": "2024-01-02 18:00:00",
+      "close_time": "2024-01-02 19:25:00"
+    },
+    {
+      "id": 13,
+      "direction": "buy",
+      "pnl": 14.1572,
+      "status": "stopped",
+      "pattern": "",
+      "chart_pattern": "",
+      "score": 3.0,
+      "reasons": [
+        "1h trend: uptrend",
+        "TL bounce: support"
+      ],
+      "won": "True",
+      "open_time": "2024-01-02 18:40:00",
+      "close_time": "2024-01-02 19:25:00"
+    },
+    {
+      "id": 10,
+      "direction": "buy",
+      "pnl": -14.4933,
+      "status": "stopped",
+      "pattern": "Hammer",
+      "chart_pattern": "",
+      "score": 3.0,
+      "reasons": [
+        "1h trend: uptrend",
+        "Candle: Hammer"
+      ],
+      "won": "False",
+      "open_time": "2024-01-02 17:35:00",
+      "close_time": "2024-01-02 20:20:00"
+    },
+    {
+      "id": 14,
+      "direction": "buy",
+      "pnl": 24.4504,
+      "status": "stopped",
+      "pattern": "Bullish Engulfing",
+      "chart_pattern": "",
+      "score": 3.0,
+      "reasons": [
+        "1h trend: uptrend",
+        "Candle: Bullish Engulfing"
+      ],
+      "won": "True",
+      "open_time": "2024-01-02 19:35:00",
+      "close_time": "2024-01-02 20:20:00"
+    },
+    {
+      "id": 15,
+      "direction": "buy",
+      "pnl": -6.0902,
+      "status": "stopped",
+      "pattern": "Bullish Engulfing",
+      "chart_pattern": "",
+      "score": 3.0,
+      "reasons": [
+        "1h trend: uptrend",
+        "Candle: Bullish Engulfing"
+      ],
+      "won": "False",
+      "open_time": "2024-01-02 19:55:00",
+      "close_time": "2024-01-02 20:20:00"
     }
   ],
   "reason_stats": {
@@ -34,6 +263,46 @@
       "wins": 0,
       "losses": 1,
       "pnl": -3.297
+    },
+    "15m BOS: bullish_bos": {
+      "wins": 1,
+      "losses": 4,
+      "pnl": -276.455
+    },
+    "Candle: Hammer": {
+      "wins": 2,
+      "losses": 2,
+      "pnl": 46.9909
+    },
+    "TL break: resistance": {
+      "wins": 3,
+      "losses": 2,
+      "pnl": 70.7547
+    },
+    "TL bounce: support": {
+      "wins": 1,
+      "losses": 2,
+      "pnl": -97.2259
+    },
+    "Price inside FVG": {
+      "wins": 2,
+      "losses": 1,
+      "pnl": 142.8349
+    },
+    "Candle: Tweezer Bottom": {
+      "wins": 1,
+      "losses": 1,
+      "pnl": 96.8154
+    },
+    "1h trend: uptrend": {
+      "wins": 2,
+      "losses": 7,
+      "pnl": -210.1889
+    },
+    "Candle: Bullish Engulfing": {
+      "wins": 1,
+      "losses": 1,
+      "pnl": 18.3602
     }
   },
   "pattern_stats": {
@@ -41,16 +310,35 @@
       "wins": 0,
       "losses": 1,
       "pnl": -3.297
+    },
+    "Hammer": {
+      "wins": 2,
+      "losses": 2,
+      "pnl": 46.9909
+    },
+    "Tweezer Bottom": {
+      "wins": 1,
+      "losses": 1,
+      "pnl": 96.8154
+    },
+    "Bullish Engulfing": {
+      "wins": 1,
+      "losses": 1,
+      "pnl": 18.3602
     }
   },
   "chart_pattern_stats": {},
   "score_stats": {
     "3": {
-      "wins": 0,
-      "losses": 1,
-      "pnl": -3.297
+      "wins": 5,
+      "losses": 10,
+      "pnl": -142.7312
     }
   },
-  "adaptive_weights": {},
-  "lessons": []
+  "adaptive_weights": {
+    "1h trend: uptrend": 0.25
+  },
+  "lessons": [
+    "Low WR (33%) at score~3 \u2014 consider raising threshold"
+  ]
 }
