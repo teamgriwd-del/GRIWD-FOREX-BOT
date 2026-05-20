@@ -234,6 +234,11 @@ def generate_signal(data: dict, timestamp: pd.Timestamp = None,
                     score += SCORE_WEIGHTS.get("tl_break", 1) * aw.get(r, 1.0)
                     reasons.append(r)
 
+        # Require at least one specific trigger — no "indicator soup" entries
+        has_trigger = bos_ok or cs_ok or chart_ok
+        if not has_trigger:
+            continue
+
         threshold = LIVE_SIGNAL_THRESHOLD if MODE.mode != "backtest" else SIGNAL_THRESHOLD
         if score < threshold:
             continue
