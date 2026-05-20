@@ -9,9 +9,9 @@ import os
 from typing import Dict
 
 MEMORY_FILE   = "trade_memory.json"
-MIN_SAMPLES   = 10      # trades needed before adjusting a weight
-BOOST_WR      = 0.65    # win rate above this → boost weight
-PENALIZE_WR   = 0.35    # win rate below this → penalize weight
+MIN_SAMPLES   = 8       # trades needed before adjusting a weight
+BOOST_WR      = 0.55    # win rate above this → boost weight  (was 0.65)
+PENALIZE_WR   = 0.45    # win rate below this → penalize weight (was 0.35)
 MAX_MULT      = 2.0
 MIN_MULT      = 0.25
 
