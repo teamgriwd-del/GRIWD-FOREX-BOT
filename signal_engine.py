@@ -14,9 +14,9 @@ import candlestick_patterns as cp_module
 import chart_patterns as chart_module
 import zone_detector as zd_module
 from config import (
-    SIGNAL_THRESHOLD, SCORE_WEIGHTS, REWARD_RISK_RATIO,
+    SIGNAL_THRESHOLD, LIVE_SIGNAL_THRESHOLD, SCORE_WEIGHTS, REWARD_RISK_RATIO,
     TL_BOUNCE_TOLERANCE, TL_QUALITY_THRESHOLD, TL_BREAK_BUFFER,
-    SWING_SL_BUFFER, MAX_SL_ATR, STOP_ATR_MULT,
+    SWING_SL_BUFFER, MAX_SL_ATR, STOP_ATR_MULT, MODE,
 )
 
 
@@ -234,7 +234,8 @@ def generate_signal(data: dict, timestamp: pd.Timestamp = None,
                     score += SCORE_WEIGHTS.get("tl_break", 1) * aw.get(r, 1.0)
                     reasons.append(r)
 
-        if score < SIGNAL_THRESHOLD:
+        threshold = LIVE_SIGNAL_THRESHOLD if MODE.mode != "backtest" else SIGNAL_THRESHOLD
+        if score < threshold:
             continue
 
         # ── Build trade levels ────────────────────────────────────────────────

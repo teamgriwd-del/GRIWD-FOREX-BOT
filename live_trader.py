@@ -14,11 +14,13 @@ from signal_engine import generate_signal
 from trade_memory import TradeMemory
 from config import (
     ENTRY_TF, CONFIRM_TF, TREND_TF,
-    ACCOUNT_BALANCE, RISK_PER_TRADE_PCT,
-    MAX_OPEN_TRADES, MAX_TRADES_PER_SYMBOL,
+    ACCOUNT_BALANCE, RISK_PER_TRADE_PCT, LIVE_RISK_PER_TRADE,
+    MAX_OPEN_TRADES, LIVE_MAX_OPEN_TRADES, MAX_TRADES_PER_SYMBOL,
     TRAILING_STOP, TRAILING_ATR_MULT,
     AUTO_DISCOVER_SYMBOLS, INSTRUMENTS, SYMBOL_KEYWORDS,
-    MEMORY_FILE,
+    MEMORY_FILE, MODE,
+    SIGNAL_THRESHOLD, LIVE_SIGNAL_THRESHOLD,
+    MICRO_BALANCE_THRESHOLD,
 )
 
 # Shared learning memory — loads prior backtest knowledge and accumulates live data
@@ -51,7 +53,8 @@ def get_balance() -> float:
 
 
 def calc_lot(entry: float, stop_loss: float, balance: float) -> float:
-    risk = balance * RISK_PER_TRADE_PCT
+    risk_pct = LIVE_RISK_PER_TRADE if MODE.mode != "backtest" else RISK_PER_TRADE_PCT
+    risk = balance * risk_pct
     dist = abs(entry - stop_loss)
     if dist == 0:
         return 0.01
@@ -89,21 +92,24 @@ def update_trailing(symbols: list):
             continue
         price = tick["mid"]
         for ticket, meta in list(open_tickets[sym].items()):
-            atr   = meta.get("atr", 1.0)
-            trail = atr * TRAILING_ATR_MULT
+            atr       = meta.get("atr", 1.0)
+            trail     = atr * TRAILING_ATR_MULT
             direction = meta["direction"]
+            entry     = meta.get("entry", price)
             if direction == "buy":
-                new_sl = price - trail
-                if new_sl > meta["sl"]:
-                    if mt5c.modify_sl(ticket, new_sl, sym):
-                        open_tickets[sym][ticket]["sl"] = new_sl
-                        log.info(f"  [{sym}] Trail SL UP  ticket={ticket}  sl={new_sl:.5f}")
+                if price > entry:                    # only trail once in profit
+                    new_sl = price - trail
+                    if new_sl > meta["sl"]:
+                        if mt5c.modify_sl(ticket, new_sl, sym):
+                            open_tickets[sym][ticket]["sl"] = new_sl
+                            log.info(f"  [{sym}] Trail SL UP  ticket={ticket}  sl={new_sl:.5f}")
             else:
-                new_sl = price + trail
-                if new_sl < meta["sl"]:
-                    if mt5c.modify_sl(ticket, new_sl, sym):
-                        open_tickets[sym][ticket]["sl"] = new_sl
-                        log.info(f"  [{sym}] Trail SL DOWN ticket={ticket}  sl={new_sl:.5f}")
+                if price < entry:                    # only trail once in profit
+                    new_sl = price + trail
+                    if new_sl < meta["sl"]:
+                        if mt5c.modify_sl(ticket, new_sl, sym):
+                            open_tickets[sym][ticket]["sl"] = new_sl
+                            log.info(f"  [{sym}] Trail SL DOWN ticket={ticket}  sl={new_sl:.5f}")
 
 
 # ── Per-Symbol Scan ───────────────────────────────────────────────────────────
@@ -114,8 +120,9 @@ def scan_symbol(symbol: str, balance: float, dry_run: bool, now: datetime):
     if sym_positions >= MAX_TRADES_PER_SYMBOL:
         return   # already at max for this symbol
 
+    max_trades      = LIVE_MAX_OPEN_TRADES if MODE.mode != "backtest" else MAX_OPEN_TRADES
     total_positions = sum(len(v) for v in open_tickets.values())
-    if total_positions >= MAX_OPEN_TRADES:
+    if total_positions >= max_trades:
         return   # global cap reached
 
     data = fetch_data(symbol)
@@ -198,7 +205,22 @@ def run_live(symbols: list = None, dry_run: bool = False):
     log.info("=" * 65)
 
     acct = mt5c.account_info()
-    log.info(f"  Account  : {acct.get('balance', 0):.2f} {acct.get('currency', 'USD')}")
+    balance_now = acct.get("balance", ACCOUNT_BALANCE)
+    # MT5 trade_mode: 0 = demo, 1 = real/live
+    is_live = acct.get("trade_mode", 0) == 1
+    is_demo = not is_live
+    MODE.configure(balance=balance_now, is_live=is_live, is_demo=is_demo)
+
+    acct_label = "LIVE" if MODE.mode == "live" else "DEMO"
+    threshold  = LIVE_SIGNAL_THRESHOLD if MODE.mode != "backtest" else SIGNAL_THRESHOLD
+    max_trades = LIVE_MAX_OPEN_TRADES  if MODE.mode != "backtest" else MAX_OPEN_TRADES
+    risk_pct   = LIVE_RISK_PER_TRADE   if MODE.mode != "backtest" else RISK_PER_TRADE_PCT
+
+    log.info(f"  Account  : {balance_now:.2f} {acct.get('currency', 'USD')}  "
+             f"[{acct_label}]  type={MODE.account_type.upper()}")
+    log.info(f"  Signal threshold : {threshold}  "
+             f"Risk/trade : {risk_pct*100:.1f}%  "
+             f"Max trades : {max_trades}")
 
     lessons = _memory.get_lessons()
     if lessons:
@@ -218,8 +240,9 @@ def run_live(symbols: list = None, dry_run: bool = False):
             update_trailing(active_symbols)
 
             total_open = sum(len(v) for v in open_tickets.values())
+            max_trades = LIVE_MAX_OPEN_TRADES if MODE.mode != "backtest" else MAX_OPEN_TRADES
             log.info(f"--- Scan cycle | balance=${balance:.2f}  "
-                     f"open={total_open}/{MAX_OPEN_TRADES} ---")
+                     f"open={total_open}/{max_trades} [{MODE.mode}] ---")
 
             # ── Scan every symbol ──────────────────────────────────────────────
             for sym in active_symbols:

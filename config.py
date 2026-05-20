@@ -3,6 +3,45 @@ CTCFx Synthetic Trading Bot - Configuration
 Strategy: Multi-timeframe ICT/SMC with candlestick + chart pattern confluence
 """
 
+# ── Trading Mode & Account Type ───────────────────────────────────────────────
+# BotMode is a mutable singleton.  live_trader.py calls MODE.configure() at
+# startup so every module picks up the right thresholds automatically.
+class _BotMode:
+    """Runtime mode state — set once at startup, read everywhere."""
+    def __init__(self):
+        self.mode         = "backtest"  # "backtest" | "demo" | "live"
+        self.account_type = "standard"  # "micro" | "standard"
+
+    def configure(self, balance: float, is_live: bool = False, is_demo: bool = False):
+        """Detect account type from balance; set trading mode."""
+        self.account_type = "micro" if balance < MICRO_BALANCE_THRESHOLD else "standard"
+        if is_live:
+            self.mode = "live"
+        elif is_demo:
+            self.mode = "demo"
+
+    def __repr__(self):
+        return f"BotMode(mode={self.mode!r}, account_type={self.account_type!r})"
+
+MODE = _BotMode()
+
+# Accounts below this USD balance are treated as micro (adjust to your broker)
+MICRO_BALANCE_THRESHOLD = 1_000.0
+
+# ── Live / Demo conservative overrides ───────────────────────────────────────
+# Applied automatically when MODE.mode != "backtest".
+# Backtest uses the base values below to stay permissive and maximise learning.
+LIVE_SIGNAL_THRESHOLD  = 4      # require stronger confluence when real money is at stake
+LIVE_RISK_PER_TRADE    = 0.005  # 0.5% risk per trade (vs 1% in backtest)
+LIVE_MAX_OPEN_TRADES   = 2      # fewer concurrent positions when live/demo
+
+# ── Micro-account lot sizing ──────────────────────────────────────────────────
+# When MODE.account_type == "micro", position_size() uses these instead of
+# PIP_VALUE / CONTRACT_SIZE so lot amounts stay in micro-lot units.
+# Micro lot: $0.10 per price-unit per lot  (standard = $1.00)
+MICRO_PIP_VALUE        = 0.1    # $0.10 per price unit per micro lot
+MICRO_CONTRACT_SIZE    = 1.0    # lots are already expressed in micro lots
+
 # ── Timeframes ──────────────────────────────────────────────────────────────
 TREND_TF    = "1h"    # Higher timeframe: trend context
 CONFIRM_TF  = "15m"   # Mid timeframe: structure confirmation
