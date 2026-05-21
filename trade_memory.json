@@ -1,5 +1,5 @@
 {
-  "total_trades": 10,
+  "total_trades": 12,
   "trades": [
     {
       "id": 1,
@@ -173,6 +173,40 @@
       "won": "True",
       "open_time": "2024-01-01 23:00:00",
       "close_time": "2024-01-01 23:15:00"
+    },
+    {
+      "id": 11,
+      "direction": "buy",
+      "pnl": 119.8283,
+      "status": "tp_hit",
+      "pattern": "Tweezer Bottom",
+      "chart_pattern": "",
+      "score": 4.0,
+      "reasons": [
+        "1h trend: uptrend",
+        "Candle: Tweezer Bottom",
+        "Liquidity sweep: lows"
+      ],
+      "won": "True",
+      "open_time": "2024-01-11 02:55:00",
+      "close_time": "2024-01-11 03:00:00"
+    },
+    {
+      "id": 12,
+      "direction": "buy",
+      "pnl": -101.0686,
+      "status": "stopped",
+      "pattern": "Hammer",
+      "chart_pattern": "",
+      "score": 4.0,
+      "reasons": [
+        "1h trend: uptrend",
+        "Candle: Hammer",
+        "Liquidity sweep: lows"
+      ],
+      "won": "False",
+      "open_time": "2024-01-14 20:10:00",
+      "close_time": "2024-01-14 20:15:00"
     }
   ],
   "reason_stats": {
@@ -208,8 +242,8 @@
     },
     "Candle: Hammer": {
       "wins": 0,
-      "losses": 1,
-      "pnl": -100.5164
+      "losses": 2,
+      "pnl": -201.585
     },
     "15m BOS: bearish_bos": {
       "wins": 0,
@@ -230,6 +264,21 @@
       "wins": 2,
       "losses": 0,
       "pnl": 48.7306
+    },
+    "1h trend: uptrend": {
+      "wins": 1,
+      "losses": 1,
+      "pnl": 18.7597
+    },
+    "Candle: Tweezer Bottom": {
+      "wins": 1,
+      "losses": 0,
+      "pnl": 119.8283
+    },
+    "Liquidity sweep: lows": {
+      "wins": 1,
+      "losses": 1,
+      "pnl": 18.7597
     }
   },
   "pattern_stats": {
@@ -240,13 +289,18 @@
     },
     "Hammer": {
       "wins": 0,
-      "losses": 1,
-      "pnl": -100.5164
+      "losses": 2,
+      "pnl": -201.585
     },
     "Shooting Star": {
       "wins": 2,
       "losses": 0,
       "pnl": 48.7306
+    },
+    "Tweezer Bottom": {
+      "wins": 1,
+      "losses": 0,
+      "pnl": 119.8283
     }
   },
   "chart_pattern_stats": {
@@ -258,9 +312,9 @@
   },
   "score_stats": {
     "4": {
-      "wins": 2,
-      "losses": 5,
-      "pnl": -22.9972
+      "wins": 3,
+      "losses": 6,
+      "pnl": -4.2375
     },
     "5": {
       "wins": 1,
