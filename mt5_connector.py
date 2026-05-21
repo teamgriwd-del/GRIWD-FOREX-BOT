@@ -210,7 +210,7 @@ def _get_filling_mode(symbol: str) -> int:
 
 def place_market_order(symbol: str, direction: str, lot: float,
                        stop_loss: float, take_profit: float,
-                       comment: str = "CTCFx") -> Optional[dict]:
+                       comment: str = "GRIWD") -> Optional[dict]:
     """
     Place a market order.
     direction: "buy" | "sell"
@@ -305,7 +305,7 @@ def close_position(ticket: int, symbol: str) -> bool:
         "price"       : price,
         "deviation"   : 20,
         "magic"       : 202400,
-        "comment"     : "CTCFx close",
+        "comment"     : "GRIWD close",
         "type_time"   : mt5.ORDER_TIME_GTC,
         "type_filling": mt5.ORDER_FILLING_IOC,
     }

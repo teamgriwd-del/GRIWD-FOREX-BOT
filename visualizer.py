@@ -42,7 +42,7 @@ def plot_trade_distribution(closed_trades: list):
     losses = [p for p in pnls if p <= 0]
 
     fig, axes = plt.subplots(1, 3, figsize=(16, 5))
-    fig.suptitle("CTCFx Bot — Trade Analysis", fontsize=14, fontweight="bold")
+    fig.suptitle("GRIWD Bot — Trade Analysis", fontsize=14, fontweight="bold")
 
     # PnL distribution
     axes[0].hist(pnls, bins=30, color="#5B9BD5", edgecolor="white", linewidth=0.5)
@@ -129,7 +129,7 @@ def plot_price_with_trades(df_5m: pd.DataFrame, closed_trades: list,
     buy_patch  = mpatches.Patch(color="#00C896", label="Buy Entry")
     sell_patch = mpatches.Patch(color="#E74C3C", label="Sell Entry")
     ax.legend(handles=[buy_patch, sell_patch])
-    ax.set_title(f"CTCFx Bot — Price Chart (last {n_candles} candles)", fontsize=13)
+    ax.set_title(f"GRIWD Bot — Price Chart (last {n_candles} candles)", fontsize=13)
     ax.set_xlabel("Bar Index")
     ax.set_ylabel("Price")
     ax.grid(alpha=0.2)

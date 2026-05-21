@@ -101,7 +101,7 @@ def run_backtest(data: dict = None, verbose: bool = False) -> dict:
 
 def print_report(stats: dict):
     print("\n" + "=" * 65)
-    print("  CTCFx SYNTHETIC TRADING BOT — BACKTEST RESULTS")
+    print("  GRIWD FOREX BOT — BACKTEST RESULTS")
     print("=" * 65)
     print(f"  Total Trades   : {stats.get('total_trades', 0)}")
     print(f"  Wins           : {stats.get('wins', 0)}")

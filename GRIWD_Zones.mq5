@@ -1,10 +1,10 @@
 //+------------------------------------------------------------------+
-//|  CTCFx_Zones.mq5                                                 |
+//|  GRIWD_Zones.mq5                                                 |
 //|  Synthetic Trading Bot — Live Zone Indicator                     |
 //|  Draws: Buy/Sell Zones, Order Blocks, FVGs, Trend Lines,         |
 //|         Swing Highs/Lows, Liquidity Sweeps, Equilibrium          |
 //+------------------------------------------------------------------+
-#property copyright   "CTCFx Bot"
+#property copyright   "GRIWD Bot"
 #property version     "1.10"
 #property indicator_chart_window
 #property indicator_buffers 0
@@ -51,7 +51,7 @@ input int   LineWidth     = 2;
 input bool  ZonesInBack   = true;   // Draw zones behind candles
 
 //── Globals ───────────────────────────────────────────────────────────
-string PFX = "CTCFx_";
+string PFX = "GRIWD_";
 int    atr_handle;
 int    prev_bars = 0;
 
@@ -63,7 +63,7 @@ int OnInit()
 {
    atr_handle = iATR(_Symbol, _Period, InpATRPeriod);
    if(atr_handle == INVALID_HANDLE){ Print("ATR init failed"); return INIT_FAILED; }
-   IndicatorSetString(INDICATOR_SHORTNAME, "CTCFx Zones");
+   IndicatorSetString(INDICATOR_SHORTNAME, "GRIWD Zones");
    return INIT_SUCCEEDED;
 }
 

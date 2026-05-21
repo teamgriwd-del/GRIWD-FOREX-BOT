@@ -36,7 +36,7 @@ logging.basicConfig(
         logging.StreamHandler(sys.stdout),   # stdout avoids PowerShell NativeCommandError
     ],
 )
-log = logging.getLogger("CTCFx")
+log = logging.getLogger("GRIWD")
 
 SCAN_INTERVAL = 30      # seconds between full multi-symbol scans
 BARS_PER_TF   = {ENTRY_TF: 300, CONFIRM_TF: 200, TREND_TF: 150}
@@ -159,7 +159,7 @@ def scan_symbol(symbol: str, balance: float, dry_run: bool, now: datetime):
         lot         = lot,
         stop_loss   = signal.stop_loss,
         take_profit = signal.take_profit,
-        comment     = f"CTCFx|{signal.pattern or 'sig'}|sc{signal.score}",
+        comment     = f"GRIWD|{signal.pattern or 'sig'}|sc{signal.score}",
     )
     if result:
         open_tickets[symbol][result["ticket"]] = {
@@ -195,7 +195,7 @@ def run_live(symbols: list = None, dry_run: bool = False):
         return
 
     log.info("=" * 65)
-    log.info("  CTCFx LIVE TRADING ENGINE — MULTI-SYMBOL")
+    log.info("  GRIWD FOREX BOT — LIVE TRADING ENGINE — MULTI-SYMBOL")
     if dry_run:
         log.info("  *** DRY RUN — signals only, no real orders ***")
     log.info(f"  Symbols  : {active_symbols}")

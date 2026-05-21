@@ -1,5 +1,5 @@
 """
-CTCFx Synthetic Trading Bot - Configuration
+GRIWD Forex Bot - Configuration
 Strategy: Multi-timeframe ICT/SMC with candlestick + chart pattern confluence
 """
 
