@@ -1,5 +1,5 @@
 {
-  "total_trades": 13,
+  "total_trades": 15,
   "trades": [
     {
       "id": 1,
@@ -234,13 +234,49 @@
       "won": "False",
       "open_time": "2024-01-05 03:30:00",
       "close_time": "2024-01-05 03:40:00"
+    },
+    {
+      "id": 14,
+      "direction": "buy",
+      "pnl": -101.3103,
+      "status": "stopped",
+      "pattern": "Hammer",
+      "chart_pattern": "",
+      "score": 5.0,
+      "reasons": [
+        "EMA trend aligned",
+        "15m BOS: bullish_bos",
+        "Price inside FVG",
+        "Candle: Hammer"
+      ],
+      "won": "False",
+      "open_time": "2024-01-10 01:45:00",
+      "close_time": "2024-01-10 01:55:00"
+    },
+    {
+      "id": 15,
+      "direction": "buy",
+      "pnl": -18.753,
+      "status": "stopped",
+      "pattern": "Hammer",
+      "chart_pattern": "",
+      "score": 5.0,
+      "reasons": [
+        "EMA trend aligned",
+        "15m BOS: bullish_bos",
+        "Price inside FVG",
+        "Candle: Hammer"
+      ],
+      "won": "False",
+      "open_time": "2024-01-10 01:55:00",
+      "close_time": "2024-01-10 02:30:00"
     }
   ],
   "reason_stats": {
     "EMA trend aligned": {
       "wins": 6,
-      "losses": 7,
-      "pnl": 131.805
+      "losses": 9,
+      "pnl": 11.7417
     },
     "Candle: Bearish Harami": {
       "wins": 0,
@@ -264,8 +300,8 @@
     },
     "Price inside FVG": {
       "wins": 3,
-      "losses": 2,
-      "pnl": 153.1623
+      "losses": 4,
+      "pnl": 33.099
     },
     "Chart: Double Top": {
       "wins": 1,
@@ -279,8 +315,8 @@
     },
     "15m BOS: bullish_bos": {
       "wins": 2,
-      "losses": 4,
-      "pnl": -60.4408
+      "losses": 6,
+      "pnl": -180.5041
     },
     "Candle: Bullish Harami": {
       "wins": 1,
@@ -309,8 +345,8 @@
     },
     "Candle: Hammer": {
       "wins": 1,
-      "losses": 1,
-      "pnl": 112.1829
+      "losses": 3,
+      "pnl": -7.8804
     }
   },
   "pattern_stats": {
@@ -341,8 +377,8 @@
     },
     "Hammer": {
       "wins": 1,
-      "losses": 1,
-      "pnl": 112.1829
+      "losses": 3,
+      "pnl": -7.8804
     }
   },
   "chart_pattern_stats": {
@@ -355,12 +391,16 @@
   "score_stats": {
     "5": {
       "wins": 6,
-      "losses": 7,
-      "pnl": 131.805
+      "losses": 9,
+      "pnl": 11.7417
     }
   },
   "adaptive_weights": {
-    "EMA trend aligned": 1.0
+    "EMA trend aligned": 0.75,
+    "15m BOS: bullish_bos": 0.25,
+    "TL break: resistance": 1.0
   },
-  "lessons": []
+  "lessons": [
+    "Low WR (40%) at score~5 \u2014 consider raising threshold"
+  ]
 }
