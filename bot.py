@@ -193,14 +193,15 @@ def run_learning_test(args):
         memory = TradeMemory(mem_file)
         rm = RiskManager(memory=memory)
 
+        WIN = 300   # analysis window — keeps each analyze() call O(1) not O(n)
         for i in range(WARMUP, len(df5)):
             ts = df5.index[i]
             pr = df5["close"].iloc[i]
             hi = df5["high"].iloc[i]
             lo = df5["low"].iloc[i]
-            s5  = df5.iloc[:i + 1]
-            s15 = data[CONFIRM_TF].loc[:ts]
-            s1h = data[TREND_TF].loc[:ts]
+            s5  = df5.iloc[max(0, i - WIN + 1):i + 1]
+            s15 = data[CONFIRM_TF].loc[:ts].iloc[-WIN:]
+            s1h = data[TREND_TF].loc[:ts].iloc[-WIN:]
             if s15.empty or s1h.empty:
                 continue
             atr = s5["atr"].iloc[-1]

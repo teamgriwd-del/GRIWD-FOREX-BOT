@@ -36,16 +36,17 @@ def run_backtest(data: dict = None, verbose: bool = False) -> dict:
           f"from {df_5m.index[0]} to {df_5m.index[-1]}")
     print("-" * 65)
 
+    WIN = 300   # analysis window — keeps each analyze() call O(1) not O(n)
     for i in range(WARMUP_BARS, len(df_5m)):
         ts        = df_5m.index[i]
         price     = df_5m["close"].iloc[i]
         bar_high  = df_5m["high"].iloc[i]
         bar_low   = df_5m["low"].iloc[i]
 
-        # Build slices up to current bar
-        slice_5m  = df_5m.iloc[:i + 1]
-        slice_15m = data[CONFIRM_TF].loc[:ts]
-        slice_1h  = data[TREND_TF].loc[:ts]
+        # Build bounded slices — prevents O(n²) FVG/swing analysis
+        slice_5m  = df_5m.iloc[max(0, i - WIN + 1):i + 1]
+        slice_15m = data[CONFIRM_TF].loc[:ts].iloc[-WIN:]
+        slice_1h  = data[TREND_TF].loc[:ts].iloc[-WIN:]
 
         if slice_15m.empty or slice_1h.empty:
             continue
