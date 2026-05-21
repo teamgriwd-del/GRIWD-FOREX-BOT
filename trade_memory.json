@@ -1,10 +1,27 @@
 {
-  "total_trades": 15,
+  "total_trades": 10,
   "trades": [
     {
       "id": 1,
       "direction": "sell",
-      "pnl": -4.954,
+      "pnl": 119.8833,
+      "status": "tp_hit",
+      "pattern": "Bearish Harami",
+      "chart_pattern": "",
+      "score": 4.0,
+      "reasons": [
+        "EMA trend aligned",
+        "Candle: Bearish Harami",
+        "TL break: support"
+      ],
+      "won": "True",
+      "open_time": "2024-01-01 08:35:00",
+      "close_time": "2024-01-01 09:30:00"
+    },
+    {
+      "id": 2,
+      "direction": "sell",
+      "pnl": -5.0131,
       "status": "stopped",
       "pattern": "Bearish Harami",
       "chart_pattern": "",
@@ -20,9 +37,94 @@
       "close_time": "2024-01-01 10:20:00"
     },
     {
-      "id": 2,
+      "id": 3,
+      "direction": "buy",
+      "pnl": -11.8157,
+      "status": "stopped",
+      "pattern": "",
+      "chart_pattern": "",
+      "score": 4.0,
+      "reasons": [
+        "EMA trend aligned",
+        "15m BOS: bullish_bos",
+        "TL break: resistance"
+      ],
+      "won": "False",
+      "open_time": "2024-01-01 16:00:00",
+      "close_time": "2024-01-01 16:15:00"
+    },
+    {
+      "id": 4,
+      "direction": "buy",
+      "pnl": -18.1849,
+      "status": "stopped",
+      "pattern": "",
+      "chart_pattern": "",
+      "score": 4.0,
+      "reasons": [
+        "EMA trend aligned",
+        "15m BOS: bullish_bos",
+        "TL break: resistance"
+      ],
+      "won": "False",
+      "open_time": "2024-01-01 16:10:00",
+      "close_time": "2024-01-01 17:05:00"
+    },
+    {
+      "id": 5,
+      "direction": "buy",
+      "pnl": -16.9928,
+      "status": "stopped",
+      "pattern": "",
+      "chart_pattern": "",
+      "score": 4.0,
+      "reasons": [
+        "EMA trend aligned",
+        "15m BOS: bullish_bos",
+        "TL break: resistance"
+      ],
+      "won": "False",
+      "open_time": "2024-01-01 16:50:00",
+      "close_time": "2024-01-01 17:05:00"
+    },
+    {
+      "id": 6,
+      "direction": "buy",
+      "pnl": -22.0039,
+      "status": "stopped",
+      "pattern": "",
+      "chart_pattern": "",
+      "score": 4.0,
+      "reasons": [
+        "EMA trend aligned",
+        "15m BOS: bullish_bos",
+        "TL break: resistance"
+      ],
+      "won": "False",
+      "open_time": "2024-01-01 16:55:00",
+      "close_time": "2024-01-01 17:05:00"
+    },
+    {
+      "id": 7,
+      "direction": "buy",
+      "pnl": -100.5164,
+      "status": "stopped",
+      "pattern": "Hammer",
+      "chart_pattern": "",
+      "score": 4.0,
+      "reasons": [
+        "EMA trend aligned",
+        "Candle: Hammer",
+        "TL break: resistance"
+      ],
+      "won": "False",
+      "open_time": "2024-01-01 19:05:00",
+      "close_time": "2024-01-01 19:45:00"
+    },
+    {
+      "id": 8,
       "direction": "sell",
-      "pnl": -7.5506,
+      "pnl": -7.5132,
       "status": "stopped",
       "pattern": "",
       "chart_pattern": "Double Top",
@@ -38,9 +140,9 @@
       "close_time": "2024-01-01 21:25:00"
     },
     {
-      "id": 3,
+      "id": 9,
       "direction": "sell",
-      "pnl": 22.2068,
+      "pnl": 22.0974,
       "status": "stopped",
       "pattern": "Shooting Star",
       "chart_pattern": "Double Top",
@@ -56,351 +158,118 @@
       "close_time": "2024-01-01 22:10:00"
     },
     {
-      "id": 4,
-      "direction": "buy",
-      "pnl": -38.9767,
-      "status": "stopped",
-      "pattern": "Bullish Harami",
-      "chart_pattern": "",
-      "score": 5.0,
-      "reasons": [
-        "EMA trend aligned",
-        "15m BOS: bullish_bos",
-        "Candle: Bullish Harami",
-        "TL break: resistance"
-      ],
-      "won": "False",
-      "open_time": "2024-01-02 02:25:00",
-      "close_time": "2024-01-02 02:40:00"
-    },
-    {
-      "id": 5,
-      "direction": "buy",
-      "pnl": 119.6445,
-      "status": "tp_hit",
-      "pattern": "Tweezer Bottom",
-      "chart_pattern": "",
-      "score": 5.0,
-      "reasons": [
-        "EMA trend aligned",
-        "Price inside FVG",
-        "Candle: Tweezer Bottom",
-        "TL break: resistance"
-      ],
-      "won": "True",
-      "open_time": "2024-01-02 10:40:00",
-      "close_time": "2024-01-02 10:45:00"
-    },
-    {
-      "id": 6,
-      "direction": "buy",
-      "pnl": 50.9586,
-      "status": "stopped",
-      "pattern": "Bullish Harami",
-      "chart_pattern": "",
-      "score": 5.0,
-      "reasons": [
-        "EMA trend aligned",
-        "15m BOS: bullish_bos",
-        "Candle: Bullish Harami",
-        "TL break: resistance"
-      ],
-      "won": "True",
-      "open_time": "2024-01-02 16:50:00",
-      "close_time": "2024-01-02 17:25:00"
-    },
-    {
-      "id": 7,
-      "direction": "buy",
-      "pnl": 7.6129,
-      "status": "stopped",
-      "pattern": "Morning Star",
-      "chart_pattern": "",
-      "score": 5.0,
-      "reasons": [
-        "EMA trend aligned",
-        "15m BOS: bullish_bos",
-        "Candle: Morning Star",
-        "TL break: resistance"
-      ],
-      "won": "True",
-      "open_time": "2024-01-02 16:55:00",
-      "close_time": "2024-01-02 17:25:00"
-    },
-    {
-      "id": 8,
-      "direction": "sell",
-      "pnl": 44.0375,
-      "status": "stopped",
-      "pattern": "Shooting Star",
-      "chart_pattern": "",
-      "score": 5.0,
-      "reasons": [
-        "EMA trend aligned",
-        "15m BOS: bearish_bos",
-        "Candle: Shooting Star",
-        "Liquidity sweep: highs"
-      ],
-      "won": "True",
-      "open_time": "2024-01-03 01:25:00",
-      "close_time": "2024-01-03 02:15:00"
-    },
-    {
-      "id": 9,
-      "direction": "buy",
-      "pnl": -9.1196,
-      "status": "stopped",
-      "pattern": "Hammer",
-      "chart_pattern": "",
-      "score": 5.0,
-      "reasons": [
-        "EMA trend aligned",
-        "15m BOS: bullish_bos",
-        "Candle: Hammer",
-        "TL break: resistance"
-      ],
-      "won": "False",
-      "open_time": "2024-01-04 20:45:00",
-      "close_time": "2024-01-04 21:20:00"
-    },
-    {
       "id": 10,
-      "direction": "buy",
-      "pnl": -34.9786,
-      "status": "stopped",
-      "pattern": "Bullish Harami",
-      "chart_pattern": "",
-      "score": 5.0,
-      "reasons": [
-        "EMA trend aligned",
-        "15m BOS: bullish_bos",
-        "Candle: Bullish Harami",
-        "TL break: resistance"
-      ],
-      "won": "False",
-      "open_time": "2024-01-04 21:25:00",
-      "close_time": "2024-01-04 22:10:00"
-    },
-    {
-      "id": 11,
-      "direction": "buy",
-      "pnl": -35.9374,
-      "status": "stopped",
-      "pattern": "Morning Star",
-      "chart_pattern": "",
-      "score": 5.0,
-      "reasons": [
-        "EMA trend aligned",
-        "15m BOS: bullish_bos",
-        "Candle: Morning Star",
-        "TL break: resistance"
-      ],
-      "won": "False",
-      "open_time": "2024-01-04 21:30:00",
-      "close_time": "2024-01-04 22:10:00"
-    },
-    {
-      "id": 12,
-      "direction": "buy",
-      "pnl": 121.3025,
-      "status": "tp_hit",
-      "pattern": "Hammer",
-      "chart_pattern": "",
-      "score": 5.0,
-      "reasons": [
-        "EMA trend aligned",
-        "Price inside FVG",
-        "Candle: Hammer",
-        "TL break: resistance"
-      ],
-      "won": "True",
-      "open_time": "2024-01-04 22:15:00",
-      "close_time": "2024-01-04 23:05:00"
-    },
-    {
-      "id": 13,
       "direction": "sell",
-      "pnl": -102.4409,
+      "pnl": 26.6332,
       "status": "stopped",
       "pattern": "Shooting Star",
       "chart_pattern": "",
-      "score": 5.0,
+      "score": 4.0,
       "reasons": [
         "EMA trend aligned",
-        "15m BOS: bearish_bos",
         "Price inside FVG",
         "Candle: Shooting Star"
       ],
-      "won": "False",
-      "open_time": "2024-01-05 03:30:00",
-      "close_time": "2024-01-05 03:40:00"
-    },
-    {
-      "id": 14,
-      "direction": "buy",
-      "pnl": -101.3103,
-      "status": "stopped",
-      "pattern": "Hammer",
-      "chart_pattern": "",
-      "score": 5.0,
-      "reasons": [
-        "EMA trend aligned",
-        "15m BOS: bullish_bos",
-        "Price inside FVG",
-        "Candle: Hammer"
-      ],
-      "won": "False",
-      "open_time": "2024-01-10 01:45:00",
-      "close_time": "2024-01-10 01:55:00"
-    },
-    {
-      "id": 15,
-      "direction": "buy",
-      "pnl": -18.753,
-      "status": "stopped",
-      "pattern": "Hammer",
-      "chart_pattern": "",
-      "score": 5.0,
-      "reasons": [
-        "EMA trend aligned",
-        "15m BOS: bullish_bos",
-        "Price inside FVG",
-        "Candle: Hammer"
-      ],
-      "won": "False",
-      "open_time": "2024-01-10 01:55:00",
-      "close_time": "2024-01-10 02:30:00"
+      "won": "True",
+      "open_time": "2024-01-01 23:00:00",
+      "close_time": "2024-01-01 23:15:00"
     }
   ],
   "reason_stats": {
     "EMA trend aligned": {
-      "wins": 6,
-      "losses": 9,
-      "pnl": 11.7417
+      "wins": 3,
+      "losses": 7,
+      "pnl": -13.4261
     },
     "Candle: Bearish Harami": {
-      "wins": 0,
+      "wins": 1,
       "losses": 1,
-      "pnl": -4.954
+      "pnl": 114.8702
     },
     "TL break: support": {
-      "wins": 0,
+      "wins": 1,
       "losses": 1,
-      "pnl": -4.954
+      "pnl": 114.8702
     },
     "TL bounce: resistance": {
       "wins": 0,
       "losses": 1,
-      "pnl": -4.954
+      "pnl": -5.0131
+    },
+    "15m BOS: bullish_bos": {
+      "wins": 0,
+      "losses": 4,
+      "pnl": -68.9973
+    },
+    "TL break: resistance": {
+      "wins": 0,
+      "losses": 5,
+      "pnl": -169.5137
+    },
+    "Candle: Hammer": {
+      "wins": 0,
+      "losses": 1,
+      "pnl": -100.5164
     },
     "15m BOS: bearish_bos": {
-      "wins": 1,
-      "losses": 2,
-      "pnl": -65.954
+      "wins": 0,
+      "losses": 1,
+      "pnl": -7.5132
     },
     "Price inside FVG": {
-      "wins": 3,
-      "losses": 4,
-      "pnl": 33.099
+      "wins": 2,
+      "losses": 1,
+      "pnl": 41.2174
     },
     "Chart: Double Top": {
       "wins": 1,
       "losses": 1,
-      "pnl": 14.6562
+      "pnl": 14.5842
     },
     "Candle: Shooting Star": {
       "wins": 2,
-      "losses": 1,
-      "pnl": -36.1966
-    },
-    "15m BOS: bullish_bos": {
-      "wins": 2,
-      "losses": 6,
-      "pnl": -180.5041
-    },
-    "Candle: Bullish Harami": {
-      "wins": 1,
-      "losses": 2,
-      "pnl": -22.9967
-    },
-    "TL break: resistance": {
-      "wins": 4,
-      "losses": 4,
-      "pnl": 180.5062
-    },
-    "Candle: Tweezer Bottom": {
-      "wins": 1,
       "losses": 0,
-      "pnl": 119.6445
-    },
-    "Candle: Morning Star": {
-      "wins": 1,
-      "losses": 1,
-      "pnl": -28.3245
-    },
-    "Liquidity sweep: highs": {
-      "wins": 1,
-      "losses": 0,
-      "pnl": 44.0375
-    },
-    "Candle: Hammer": {
-      "wins": 1,
-      "losses": 3,
-      "pnl": -7.8804
+      "pnl": 48.7306
     }
   },
   "pattern_stats": {
     "Bearish Harami": {
+      "wins": 1,
+      "losses": 1,
+      "pnl": 114.8702
+    },
+    "Hammer": {
       "wins": 0,
       "losses": 1,
-      "pnl": -4.954
+      "pnl": -100.5164
     },
     "Shooting Star": {
       "wins": 2,
-      "losses": 1,
-      "pnl": -36.1966
-    },
-    "Bullish Harami": {
-      "wins": 1,
-      "losses": 2,
-      "pnl": -22.9967
-    },
-    "Tweezer Bottom": {
-      "wins": 1,
       "losses": 0,
-      "pnl": 119.6445
-    },
-    "Morning Star": {
-      "wins": 1,
-      "losses": 1,
-      "pnl": -28.3245
-    },
-    "Hammer": {
-      "wins": 1,
-      "losses": 3,
-      "pnl": -7.8804
+      "pnl": 48.7306
     }
   },
   "chart_pattern_stats": {
     "Double Top": {
       "wins": 1,
       "losses": 1,
-      "pnl": 14.6562
+      "pnl": 14.5842
     }
   },
   "score_stats": {
+    "4": {
+      "wins": 2,
+      "losses": 5,
+      "pnl": -22.9972
+    },
     "5": {
-      "wins": 6,
-      "losses": 9,
-      "pnl": 11.7417
+      "wins": 1,
+      "losses": 2,
+      "pnl": 9.5711
     }
   },
   "adaptive_weights": {
-    "EMA trend aligned": 0.75,
-    "15m BOS: bullish_bos": 0.25,
-    "TL break: resistance": 1.0
+    "EMA trend aligned": 0.25
   },
-  "lessons": [
-    "Low WR (40%) at score~5 \u2014 consider raising threshold"
-  ]
+  "lessons": []
 }
