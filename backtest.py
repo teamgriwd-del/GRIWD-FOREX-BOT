@@ -36,7 +36,9 @@ def run_backtest(data: dict = None, verbose: bool = False) -> dict:
           f"from {df_5m.index[0]} to {df_5m.index[-1]}")
     print("-" * 65)
 
-    WIN = 150   # analysis window — keeps each analyze() call O(1) not O(n)
+    WIN            = 150  # analysis window — keeps each analyze() call O(1) not O(n)
+    COOLDOWN       = 10   # minimum bars between new entries
+    last_entry_bar = -COOLDOWN
     for i in range(WARMUP_BARS, len(df_5m)):
         ts        = df_5m.index[i]
         price     = df_5m["close"].iloc[i]
@@ -67,8 +69,8 @@ def run_backtest(data: dict = None, verbose: bool = False) -> dict:
                           f"entry={trade.entry:.4f} close={trade.close_price:.4f} "
                           f"PnL={pnl_str}")
 
-        # Look for new signal
-        if rm.can_open():
+        # Look for new signal (cooldown prevents back-to-back entries)
+        if rm.can_open() and (i - last_entry_bar) >= COOLDOWN:
             current_data = {
                 ENTRY_TF  : slice_5m,
                 CONFIRM_TF: slice_15m,
@@ -77,6 +79,7 @@ def run_backtest(data: dict = None, verbose: bool = False) -> dict:
             signal = generate_signal(current_data, ts, memory=memory)
             if signal is not None:
                 trade = rm.open_trade(signal, atr_now)
+                last_entry_bar = i
                 if trade and verbose:
                     print(f"  OPEN  [{ts}] {trade.direction.upper():4s} "
                           f"entry={trade.entry:.4f} "

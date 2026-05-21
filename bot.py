@@ -193,7 +193,9 @@ def run_learning_test(args):
         memory = TradeMemory(mem_file)
         rm = RiskManager(memory=memory)
 
-        WIN = 150   # analysis window — keeps each analyze() call O(1) not O(n)
+        WIN      = 150  # analysis window — keeps each analyze() call O(1) not O(n)
+        COOLDOWN = 10   # minimum bars between new entries (prevents signal stacking)
+        last_entry_bar = -COOLDOWN
         for i in range(WARMUP, len(df5)):
             ts = df5.index[i]
             pr = df5["close"].iloc[i]
@@ -210,13 +212,14 @@ def run_learning_test(args):
             for t in list(rm.open_trades):
                 rm.update_trailing_stop(t, pr, atr)
                 rm.check_close(t, pr, ts, hi, lo)
-            if rm.can_open():
+            if rm.can_open() and (i - last_entry_bar) >= COOLDOWN:
                 sig = generate_signal(
                     {ENTRY_TF: s5, CONFIRM_TF: s15, TREND_TF: s1h},
                     ts, memory=memory,
                 )
                 if sig:
                     rm.open_trade(sig, atr)
+                    last_entry_bar = i
 
         lp = df5["close"].iloc[-1]
         lt = df5.index[-1]
