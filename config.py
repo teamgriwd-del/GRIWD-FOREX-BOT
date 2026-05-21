@@ -102,7 +102,7 @@ MEMORY_FILE            = "trade_memory.json"
 ACCOUNT_BALANCE        = 10_000.0   # starting balance USD
 RISK_PER_TRADE_PCT     = 0.01       # 1% risk per trade
 MAX_OPEN_TRADES        = 3
-REWARD_RISK_RATIO      = 1.2        # minimum RR required to take trade
+REWARD_RISK_RATIO      = 2.0        # minimum RR required to take trade
 STOP_ATR_MULT          = 1.5        # fallback stop = X * ATR beyond entry
 SWING_SL_BUFFER        = 0.15       # ATR buffer beyond swing point for SL
 MAX_SL_ATR             = 2.0        # hard cap: SL never wider than X * ATR
