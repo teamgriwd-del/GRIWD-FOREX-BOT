@@ -86,19 +86,24 @@ class RiskManager:
         return trade
 
     def update_trailing_stop(self, trade: Trade, current_price: float, atr: float):
-        """Move stop loss in profit direction if TRAILING_STOP enabled."""
+        """Move stop loss in profit direction if TRAILING_STOP enabled.
+        Breakeven lock: once 1 ATR in profit, SL cannot fall below entry."""
         if not TRAILING_STOP:
             return
         trail_dist = atr * TRAILING_ATR_MULT
         if trade.direction == "buy":
-            if current_price > trade.entry:          # only trail once in profit
+            if current_price > trade.entry:
                 new_stop = current_price - trail_dist
+                if current_price >= trade.entry + atr:   # 1 ATR in profit → lock BE
+                    new_stop = max(new_stop, trade.entry)
                 if new_stop > trade.trailing_stop:
                     trade.trailing_stop = new_stop
                     trade.stop_loss = new_stop
         else:
-            if current_price < trade.entry:          # only trail once in profit
+            if current_price < trade.entry:
                 new_stop = current_price + trail_dist
+                if current_price <= trade.entry - atr:   # 1 ATR in profit → lock BE
+                    new_stop = min(new_stop, trade.entry)
                 if new_stop < trade.trailing_stop:
                     trade.trailing_stop = new_stop
                     trade.stop_loss = new_stop

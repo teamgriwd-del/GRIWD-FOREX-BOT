@@ -31,7 +31,7 @@ MICRO_BALANCE_THRESHOLD = 1_000.0
 # ── Live / Demo conservative overrides ───────────────────────────────────────
 # Applied automatically when MODE.mode != "backtest".
 # Backtest uses the base values below to stay permissive and maximise learning.
-LIVE_SIGNAL_THRESHOLD  = 5      # require stronger confluence when real money is at stake
+LIVE_SIGNAL_THRESHOLD  = 6      # require stronger confluence when real money is at stake
 LIVE_RISK_PER_TRADE    = 0.005  # 0.5% risk per trade (vs 1% in backtest)
 LIVE_MAX_OPEN_TRADES   = 2      # fewer concurrent positions when live/demo
 
@@ -76,7 +76,7 @@ FALSE_BREAKOUT_BARS    = 3     # bars before reversal = fakeout
 
 # ── Multi-Timeframe Signal Scoring ────────────────────────────────────────────
 # Each confluence factor adds to score; trade fires when >= threshold
-SIGNAL_THRESHOLD       = 4     # minimum score to take a trade
+SIGNAL_THRESHOLD       = 5     # minimum score to take a trade
 SCORE_WEIGHTS = {
     "trend_align"       : 2,   # 1h trend matches trade direction
     "structure_break"   : 1,   # 15m structure break / BOS
@@ -102,10 +102,10 @@ MEMORY_FILE            = "trade_memory.json"
 ACCOUNT_BALANCE        = 10_000.0   # starting balance USD
 RISK_PER_TRADE_PCT     = 0.01       # 1% risk per trade
 MAX_OPEN_TRADES        = 3
-REWARD_RISK_RATIO      = 2.0        # minimum RR required to take trade
+REWARD_RISK_RATIO      = 1.5        # minimum RR required to take trade
 STOP_ATR_MULT          = 1.5        # fallback stop = X * ATR beyond entry
-SWING_SL_BUFFER        = 0.3        # ATR buffer beyond swing point for SL
-MAX_SL_ATR             = 3.0        # hard cap: SL never wider than X * ATR
+SWING_SL_BUFFER        = 0.15       # ATR buffer beyond swing point for SL
+MAX_SL_ATR             = 2.0        # hard cap: SL never wider than X * ATR
 TRAILING_STOP          = True
 TRAILING_ATR_MULT      = 1.0
 

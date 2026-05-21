@@ -143,6 +143,11 @@ def generate_signal(data: dict, timestamp: pd.Timestamp = None,
             continue
         if direction == "buy" and not price_above_ema and ms_1h.trend != "uptrend":
             continue
+
+        # No edge in a ranging 1h market — skip entirely
+        if ms_1h.trend == "consolidation":
+            continue
+
         cs_dir      = "bullish" if direction == "buy" else "bearish"
         ms_trend_ok = (ms_1h.trend == "uptrend"        if direction == "buy"
                        else ms_1h.trend == "downtrend")
@@ -154,8 +159,17 @@ def generate_signal(data: dict, timestamp: pd.Timestamp = None,
         chart_ok    = bool(bull_charts if direction == "buy" else bear_charts)
         fvg_ok      = _price_in_fvg(current_price, ms_1h, cs_dir)
         eq_ok       = _near_equilibrium(current_price, ms_5m, atr_5m)
-        consol_break = (ms_1h.trend == "consolidation" and
-                        ms_15m.last_bos in ("bullish_bos", "bearish_bos"))
+        consol_break = False  # disabled — we block consolidation entries above
+
+        # Hard mandatory gate: ALL three structural factors must align together.
+        # Trend sets the bias, BOS confirms momentum, candlestick gives the trigger.
+        if not (ms_trend_ok and bos_ok and cs_ok):
+            continue
+
+        # Entry must be at a key level — in a FVG or after a liquidity sweep.
+        # This ensures we're buying at discount / selling at premium, not mid-air.
+        if not (fvg_ok or sweep_ok):
+            continue
 
         score   = 0.0
         reasons = []
@@ -233,11 +247,6 @@ def generate_signal(data: dict, timestamp: pd.Timestamp = None,
                 if r and r not in reasons:
                     score += SCORE_WEIGHTS.get("tl_break", 1) * aw.get(r, 1.0)
                     reasons.append(r)
-
-        # Require at least one specific trigger — no "indicator soup" entries
-        has_trigger = bos_ok or cs_ok or chart_ok
-        if not has_trigger:
-            continue
 
         threshold = LIVE_SIGNAL_THRESHOLD if MODE.mode != "backtest" else SIGNAL_THRESHOLD
         if score < threshold:
