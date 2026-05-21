@@ -31,7 +31,7 @@ MICRO_BALANCE_THRESHOLD = 1_000.0
 # ── Live / Demo conservative overrides ───────────────────────────────────────
 # Applied automatically when MODE.mode != "backtest".
 # Backtest uses the base values below to stay permissive and maximise learning.
-LIVE_SIGNAL_THRESHOLD  = 6      # require stronger confluence when real money is at stake
+LIVE_SIGNAL_THRESHOLD  = 7      # require strongest confluence when real money is at stake
 LIVE_RISK_PER_TRADE    = 0.005  # 0.5% risk per trade (vs 1% in backtest)
 LIVE_MAX_OPEN_TRADES   = 2      # fewer concurrent positions when live/demo
 
@@ -76,7 +76,7 @@ FALSE_BREAKOUT_BARS    = 3     # bars before reversal = fakeout
 
 # ── Multi-Timeframe Signal Scoring ────────────────────────────────────────────
 # Each confluence factor adds to score; trade fires when >= threshold
-SIGNAL_THRESHOLD       = 4     # minimum score to take a trade
+SIGNAL_THRESHOLD       = 7     # score 7+ = 86% WR per learned data
 SCORE_WEIGHTS = {
     "trend_align"       : 2,   # 1h trend matches trade direction
     "structure_break"   : 1,   # 15m structure break / BOS
