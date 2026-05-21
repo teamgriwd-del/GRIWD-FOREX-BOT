@@ -1,407 +1,171 @@
 {
-  "total_trades": 16,
+  "total_trades": 5,
   "trades": [
     {
       "id": 1,
       "direction": "buy",
-      "pnl": 2.7567,
+      "pnl": 42.159,
       "status": "stopped",
       "pattern": "Hammer",
       "chart_pattern": "",
-      "score": 4.0,
+      "score": 5.0,
       "reasons": [
-        "1h trend: uptrend",
+        "EMA trend aligned",
+        "15m BOS: bullish_bos",
         "Candle: Hammer",
-        "TL bounce: support"
+        "TL break: resistance"
       ],
       "won": "True",
-      "open_time": "2024-01-02 19:10:00",
-      "close_time": "2024-01-02 19:25:00"
+      "open_time": "2024-01-02 07:30:00",
+      "close_time": "2024-01-02 07:55:00"
     },
     {
       "id": 2,
       "direction": "sell",
-      "pnl": 28.939,
+      "pnl": -11.9786,
       "status": "stopped",
-      "pattern": "Shooting Star",
-      "chart_pattern": "",
+      "pattern": "",
+      "chart_pattern": "Symmetrical Triangle",
       "score": 5.0,
       "reasons": [
+        "EMA trend aligned",
         "15m BOS: bearish_bos",
-        "Candle: Shooting Star",
-        "Liquidity sweep: highs",
-        "TL break: support",
-        "TL bounce: resistance"
+        "Chart: Symmetrical Triangle",
+        "TL break: support"
       ],
-      "won": "True",
-      "open_time": "2024-01-03 01:25:00",
-      "close_time": "2024-01-03 02:15:00"
+      "won": "False",
+      "open_time": "2024-01-03 00:30:00",
+      "close_time": "2024-01-03 00:50:00"
     },
     {
       "id": 3,
       "direction": "sell",
-      "pnl": -68.9929,
+      "pnl": -14.6653,
       "status": "stopped",
-      "pattern": "Shooting Star",
+      "pattern": "",
       "chart_pattern": "Symmetrical Triangle",
-      "score": 4.0,
+      "score": 5.0,
       "reasons": [
+        "EMA trend aligned",
         "15m BOS: bearish_bos",
-        "Candle: Shooting Star",
         "Chart: Symmetrical Triangle",
-        "TL bounce: resistance"
+        "TL break: support"
       ],
       "won": "False",
-      "open_time": "2024-01-03 06:15:00",
-      "close_time": "2024-01-03 06:25:00"
+      "open_time": "2024-01-03 00:35:00",
+      "close_time": "2024-01-03 00:50:00"
     },
     {
       "id": 4,
       "direction": "sell",
-      "pnl": -100.3051,
+      "pnl": -6.8656,
       "status": "stopped",
-      "pattern": "Bearish Harami",
+      "pattern": "",
       "chart_pattern": "Symmetrical Triangle",
-      "score": 4.0,
+      "score": 5.0,
       "reasons": [
+        "EMA trend aligned",
         "15m BOS: bearish_bos",
-        "Candle: Bearish Harami",
         "Chart: Symmetrical Triangle",
-        "TL bounce: resistance"
+        "TL break: support"
       ],
       "won": "False",
-      "open_time": "2024-01-03 06:20:00",
-      "close_time": "2024-01-03 07:00:00"
+      "open_time": "2024-01-03 00:50:00",
+      "close_time": "2024-01-03 01:10:00"
     },
     {
       "id": 5,
       "direction": "sell",
-      "pnl": 197.265,
-      "status": "tp_hit",
-      "pattern": "Bearish Harami",
-      "chart_pattern": "",
-      "score": 4.0,
-      "reasons": [
-        "1h trend: downtrend",
-        "Price inside FVG",
-        "Candle: Bearish Harami"
-      ],
-      "won": "True",
-      "open_time": "2024-01-03 19:15:00",
-      "close_time": "2024-01-03 20:20:00"
-    },
-    {
-      "id": 6,
-      "direction": "sell",
-      "pnl": 197.1657,
-      "status": "tp_hit",
-      "pattern": "Bearish Engulfing",
-      "chart_pattern": "",
-      "score": 5.0,
-      "reasons": [
-        "1h trend: downtrend",
-        "Price inside FVG",
-        "Candle: Bearish Engulfing",
-        "Liquidity sweep: highs"
-      ],
-      "won": "True",
-      "open_time": "2024-01-03 19:20:00",
-      "close_time": "2024-01-03 20:45:00"
-    },
-    {
-      "id": 7,
-      "direction": "sell",
-      "pnl": 197.2366,
-      "status": "tp_hit",
-      "pattern": "Shooting Star",
-      "chart_pattern": "",
-      "score": 5.0,
-      "reasons": [
-        "1h trend: downtrend",
-        "Price inside FVG",
-        "Candle: Shooting Star",
-        "Liquidity sweep: highs"
-      ],
-      "won": "True",
-      "open_time": "2024-01-03 19:30:00",
-      "close_time": "2024-01-03 20:45:00"
-    },
-    {
-      "id": 8,
-      "direction": "sell",
-      "pnl": 74.6879,
-      "status": "stopped",
-      "pattern": "",
-      "chart_pattern": "",
-      "score": 4.0,
-      "reasons": [
-        "1h trend: downtrend",
-        "15m BOS: bearish_bos",
-        "Price inside FVG"
-      ],
-      "won": "True",
-      "open_time": "2024-01-03 20:30:00",
-      "close_time": "2024-01-03 21:20:00"
-    },
-    {
-      "id": 9,
-      "direction": "sell",
-      "pnl": -105.2814,
+      "pnl": -18.9397,
       "status": "stopped",
       "pattern": "Bearish Harami",
-      "chart_pattern": "",
-      "score": 4.0,
+      "chart_pattern": "Symmetrical Triangle",
+      "score": 6.0,
       "reasons": [
-        "1h trend: downtrend",
+        "EMA trend aligned",
         "15m BOS: bearish_bos",
-        "Candle: Bearish Harami"
+        "Candle: Bearish Harami",
+        "Chart: Symmetrical Triangle",
+        "TL break: support"
       ],
       "won": "False",
-      "open_time": "2024-01-03 22:00:00",
-      "close_time": "2024-01-03 22:35:00"
-    },
-    {
-      "id": 10,
-      "direction": "sell",
-      "pnl": -105.1714,
-      "status": "stopped",
-      "pattern": "",
-      "chart_pattern": "",
-      "score": 4.0,
-      "reasons": [
-        "1h trend: downtrend",
-        "15m BOS: bearish_bos",
-        "Liquidity sweep: highs"
-      ],
-      "won": "False",
-      "open_time": "2024-01-03 22:10:00",
-      "close_time": "2024-01-03 23:05:00"
-    },
-    {
-      "id": 11,
-      "direction": "sell",
-      "pnl": -79.165,
-      "status": "stopped",
-      "pattern": "Bearish Harami",
-      "chart_pattern": "",
-      "score": 4.0,
-      "reasons": [
-        "1h trend: downtrend",
-        "Price inside FVG",
-        "Candle: Bearish Harami"
-      ],
-      "won": "False",
-      "open_time": "2024-01-03 22:55:00",
-      "close_time": "2024-01-03 23:05:00"
-    },
-    {
-      "id": 12,
-      "direction": "sell",
-      "pnl": 81.4888,
-      "status": "stopped",
-      "pattern": "Evening Star",
-      "chart_pattern": "",
-      "score": 4.0,
-      "reasons": [
-        "1h trend: downtrend",
-        "Price inside FVG",
-        "Candle: Evening Star"
-      ],
-      "won": "True",
-      "open_time": "2024-01-03 23:00:00",
-      "close_time": "2024-01-04 00:45:00"
-    },
-    {
-      "id": 13,
-      "direction": "sell",
-      "pnl": 57.1155,
-      "status": "stopped",
-      "pattern": "Bearish Engulfing",
-      "chart_pattern": "",
-      "score": 4.0,
-      "reasons": [
-        "1h trend: downtrend",
-        "Price inside FVG",
-        "Candle: Bearish Engulfing"
-      ],
-      "won": "True",
-      "open_time": "2024-01-03 23:45:00",
-      "close_time": "2024-01-04 00:45:00"
-    },
-    {
-      "id": 14,
-      "direction": "sell",
-      "pnl": -0.3285,
-      "status": "stopped",
-      "pattern": "Bearish Engulfing",
-      "chart_pattern": "",
-      "score": 4.0,
-      "reasons": [
-        "1h trend: downtrend",
-        "Price inside FVG",
-        "Candle: Bearish Engulfing"
-      ],
-      "won": "False",
-      "open_time": "2024-01-04 00:05:00",
-      "close_time": "2024-01-04 00:45:00"
-    },
-    {
-      "id": 15,
-      "direction": "sell",
-      "pnl": 73.8656,
-      "status": "stopped",
-      "pattern": "",
-      "chart_pattern": "",
-      "score": 5.0,
-      "reasons": [
-        "1h trend: downtrend",
-        "15m BOS: bearish_bos",
-        "Price inside FVG",
-        "TL bounce: resistance"
-      ],
-      "won": "True",
-      "open_time": "2024-01-04 03:30:00",
-      "close_time": "2024-01-04 04:15:00"
-    },
-    {
-      "id": 16,
-      "direction": "sell",
-      "pnl": 64.8862,
-      "status": "stopped",
-      "pattern": "",
-      "chart_pattern": "",
-      "score": 4.0,
-      "reasons": [
-        "1h trend: downtrend",
-        "15m BOS: bearish_bos",
-        "TL bounce: resistance"
-      ],
-      "won": "True",
-      "open_time": "2024-01-04 03:35:00",
-      "close_time": "2024-01-04 04:15:00"
+      "open_time": "2024-01-03 00:55:00",
+      "close_time": "2024-01-03 01:10:00"
     }
   ],
   "reason_stats": {
-    "1h trend: uptrend": {
+    "EMA trend aligned": {
+      "wins": 1,
+      "losses": 4,
+      "pnl": -10.2902
+    },
+    "15m BOS: bullish_bos": {
       "wins": 1,
       "losses": 0,
-      "pnl": 2.7567
+      "pnl": 42.159
     },
     "Candle: Hammer": {
       "wins": 1,
       "losses": 0,
-      "pnl": 2.7567
+      "pnl": 42.159
     },
-    "TL bounce: support": {
+    "TL break: resistance": {
       "wins": 1,
       "losses": 0,
-      "pnl": 2.7567
+      "pnl": 42.159
     },
     "15m BOS: bearish_bos": {
-      "wins": 4,
+      "wins": 0,
       "losses": 4,
-      "pnl": -137.3721
-    },
-    "Candle: Shooting Star": {
-      "wins": 2,
-      "losses": 1,
-      "pnl": 157.1827
-    },
-    "Liquidity sweep: highs": {
-      "wins": 3,
-      "losses": 1,
-      "pnl": 318.1699
-    },
-    "TL break: support": {
-      "wins": 1,
-      "losses": 0,
-      "pnl": 28.939
-    },
-    "TL bounce: resistance": {
-      "wins": 3,
-      "losses": 2,
-      "pnl": -1.6072
+      "pnl": -52.4492
     },
     "Chart: Symmetrical Triangle": {
       "wins": 0,
-      "losses": 2,
-      "pnl": -169.298
+      "losses": 4,
+      "pnl": -52.4492
+    },
+    "TL break: support": {
+      "wins": 0,
+      "losses": 4,
+      "pnl": -52.4492
     },
     "Candle: Bearish Harami": {
-      "wins": 1,
-      "losses": 3,
-      "pnl": -87.4865
-    },
-    "1h trend: downtrend": {
-      "wins": 8,
-      "losses": 4,
-      "pnl": 653.765
-    },
-    "Price inside FVG": {
-      "wins": 7,
-      "losses": 2,
-      "pnl": 799.3316
-    },
-    "Candle: Bearish Engulfing": {
-      "wins": 2,
+      "wins": 0,
       "losses": 1,
-      "pnl": 253.9527
-    },
-    "Candle: Evening Star": {
-      "wins": 1,
-      "losses": 0,
-      "pnl": 81.4888
+      "pnl": -18.9397
     }
   },
   "pattern_stats": {
     "Hammer": {
       "wins": 1,
       "losses": 0,
-      "pnl": 2.7567
-    },
-    "Shooting Star": {
-      "wins": 2,
-      "losses": 1,
-      "pnl": 157.1827
+      "pnl": 42.159
     },
     "Bearish Harami": {
-      "wins": 1,
-      "losses": 3,
-      "pnl": -87.4865
-    },
-    "Bearish Engulfing": {
-      "wins": 2,
+      "wins": 0,
       "losses": 1,
-      "pnl": 253.9527
-    },
-    "Evening Star": {
-      "wins": 1,
-      "losses": 0,
-      "pnl": 81.4888
+      "pnl": -18.9397
     }
   },
   "chart_pattern_stats": {
     "Symmetrical Triangle": {
       "wins": 0,
-      "losses": 2,
-      "pnl": -169.298
+      "losses": 4,
+      "pnl": -52.4492
     }
   },
   "score_stats": {
-    "4": {
-      "wins": 6,
-      "losses": 6,
-      "pnl": 18.9558
-    },
     "5": {
-      "wins": 4,
-      "losses": 0,
-      "pnl": 497.2069
+      "wins": 1,
+      "losses": 3,
+      "pnl": 8.6495
+    },
+    "6": {
+      "wins": 0,
+      "losses": 1,
+      "pnl": -18.9397
     }
   },
-  "adaptive_weights": {
-    "1h trend: downtrend": 1.576,
-    "Price inside FVG": 2.0
-  },
+  "adaptive_weights": {},
   "lessons": []
 }
