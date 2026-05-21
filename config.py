@@ -76,7 +76,7 @@ FALSE_BREAKOUT_BARS    = 3     # bars before reversal = fakeout
 
 # ── Multi-Timeframe Signal Scoring ────────────────────────────────────────────
 # Each confluence factor adds to score; trade fires when >= threshold
-SIGNAL_THRESHOLD       = 4     # minimum score to take a trade
+SIGNAL_THRESHOLD       = 5     # minimum score to take a trade
 SCORE_WEIGHTS = {
     "trend_align"       : 2,   # 1h trend matches trade direction
     "structure_break"   : 1,   # 15m structure break / BOS
