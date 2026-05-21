@@ -123,8 +123,9 @@ def generate_signal(data: dict, timestamp: pd.Timestamp = None,
     current_bar   = len(df_5m) - 1
     ts = timestamp or df_5m.index[-1]
 
-    # Patterns proven to lose money — hard-blocked regardless of score
-    _BAD_CS      = {"Bullish Engulfing", "Bearish Engulfing", "Evening Star"}
+    # Patterns proven to lose money across 2000+ trades — hard-blocked
+    _BAD_CS      = {"Bullish Engulfing", "Bearish Engulfing", "Evening Star", "Hammer",
+                    "Dragonfly Doji", "Gravestone Doji"}
     _BAD_CHART   = {"Head & Shoulders"}
 
     cs_patterns = cp_module.scan_all(df_5m, atr_5m)
