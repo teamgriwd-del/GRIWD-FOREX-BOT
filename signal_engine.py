@@ -144,13 +144,12 @@ def generate_signal(data: dict, timestamp: pd.Timestamp = None,
         if direction == "buy" and not price_above_ema and ms_1h.trend != "uptrend":
             continue
 
-        # No edge in a ranging 1h market — skip entirely
-        if ms_1h.trend == "consolidation":
-            continue
-
         cs_dir      = "bullish" if direction == "buy" else "bearish"
-        ms_trend_ok = (ms_1h.trend == "uptrend"        if direction == "buy"
-                       else ms_1h.trend == "downtrend")
+        # EMA-based trend alignment: fires ~50% of bars (much more useful than
+        # swing-based uptrend/downtrend which is near-zero in synthetic data)
+        ema_trend_ok = (price_above_ema if direction == "buy" else not price_above_ema)
+        ms_trend_ok  = (ms_1h.trend == "uptrend"   if direction == "buy"
+                        else ms_1h.trend == "downtrend")
         bos_ok      = (ms_15m.last_bos == "bullish_bos" if direction == "buy"
                        else ms_15m.last_bos == "bearish_bos")
         sweep_ok    = (ms_5m.liquidity_swept == "lows"  if direction == "buy"
@@ -159,23 +158,25 @@ def generate_signal(data: dict, timestamp: pd.Timestamp = None,
         chart_ok    = bool(bull_charts if direction == "buy" else bear_charts)
         fvg_ok      = _price_in_fvg(current_price, ms_1h, cs_dir)
         eq_ok       = _near_equilibrium(current_price, ms_5m, atr_5m)
-        consol_break = False  # disabled — we block consolidation entries above
+        consol_break = (ms_1h.trend == "consolidation" and
+                        ms_15m.last_bos in ("bullish_bos", "bearish_bos"))
 
-        # Hard mandatory gate: ALL three structural factors must align together.
-        # Trend sets the bias, BOS confirms momentum, candlestick gives the trigger.
-        if not (ms_trend_ok and bos_ok and cs_ok):
+        # Hard mandatory gate: 15m structure break + a clear entry pattern.
+        # Trend direction is already enforced by the EMA filter above.
+        if not bos_ok:
             continue
-
-        # Entry must be at a key level — in a FVG or after a liquidity sweep.
-        # This ensures we're buying at discount / selling at premium, not mid-air.
-        if not (fvg_ok or sweep_ok):
+        if not (cs_ok or chart_ok):
             continue
 
         score   = 0.0
         reasons = []
 
         # ── Base confluence factors ───────────────────────────────────────────
-        if ms_trend_ok:
+        if ema_trend_ok:
+            r = "EMA trend aligned"
+            score += SCORE_WEIGHTS["trend_align"] * aw.get(r, 1.0)
+            reasons.append(r)
+        elif ms_trend_ok:
             r = f"1h trend: {ms_1h.trend}"
             score += SCORE_WEIGHTS["trend_align"] * aw.get(r, 1.0)
             reasons.append(r)
