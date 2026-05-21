@@ -161,11 +161,9 @@ def generate_signal(data: dict, timestamp: pd.Timestamp = None,
         consol_break = (ms_1h.trend == "consolidation" and
                         ms_15m.last_bos in ("bullish_bos", "bearish_bos"))
 
-        # Hard mandatory gate: 15m structure break + a clear entry pattern.
-        # Trend direction is already enforced by the EMA filter above.
-        if not bos_ok:
-            continue
-        if not (cs_ok or chart_ok):
+        # Require at least one concrete entry trigger — pattern or structure break.
+        # BOS alone (no pattern) or pattern alone (no structure) is not enough.
+        if not (cs_ok or chart_ok) and not bos_ok:
             continue
 
         score   = 0.0
