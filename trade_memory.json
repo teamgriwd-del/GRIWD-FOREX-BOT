@@ -1,5 +1,5 @@
 {
-  "total_trades": 5,
+  "total_trades": 10,
   "trades": [
     {
       "id": 1,
@@ -91,13 +91,102 @@
       "won": "False",
       "open_time": "2024-01-03 00:55:00",
       "close_time": "2024-01-03 01:10:00"
+    },
+    {
+      "id": 6,
+      "direction": "sell",
+      "pnl": -1.1344,
+      "status": "stopped",
+      "pattern": "",
+      "chart_pattern": "Symmetrical Triangle",
+      "score": 5.0,
+      "reasons": [
+        "EMA trend aligned",
+        "15m BOS: bearish_bos",
+        "Chart: Symmetrical Triangle",
+        "TL break: support"
+      ],
+      "won": "False",
+      "open_time": "2024-01-03 01:05:00",
+      "close_time": "2024-01-03 02:15:00"
+    },
+    {
+      "id": 7,
+      "direction": "sell",
+      "pnl": 43.3714,
+      "status": "stopped",
+      "pattern": "Shooting Star",
+      "chart_pattern": "",
+      "score": 6.0,
+      "reasons": [
+        "EMA trend aligned",
+        "15m BOS: bearish_bos",
+        "Candle: Shooting Star",
+        "Liquidity sweep: highs",
+        "TL bounce: resistance"
+      ],
+      "won": "True",
+      "open_time": "2024-01-03 01:25:00",
+      "close_time": "2024-01-03 02:15:00"
+    },
+    {
+      "id": 8,
+      "direction": "sell",
+      "pnl": -25.148,
+      "status": "stopped",
+      "pattern": "",
+      "chart_pattern": "Symmetrical Triangle",
+      "score": 4.0,
+      "reasons": [
+        "EMA trend aligned",
+        "15m BOS: bearish_bos",
+        "Chart: Symmetrical Triangle"
+      ],
+      "won": "False",
+      "open_time": "2024-01-03 05:45:00",
+      "close_time": "2024-01-03 06:15:00"
+    },
+    {
+      "id": 9,
+      "direction": "sell",
+      "pnl": -27.9949,
+      "status": "stopped",
+      "pattern": "",
+      "chart_pattern": "Symmetrical Triangle",
+      "score": 4.0,
+      "reasons": [
+        "EMA trend aligned",
+        "15m BOS: bearish_bos",
+        "Chart: Symmetrical Triangle"
+      ],
+      "won": "False",
+      "open_time": "2024-01-03 05:50:00",
+      "close_time": "2024-01-03 06:15:00"
+    },
+    {
+      "id": 10,
+      "direction": "sell",
+      "pnl": -13.7095,
+      "status": "stopped",
+      "pattern": "",
+      "chart_pattern": "Symmetrical Triangle",
+      "score": 5.0,
+      "reasons": [
+        "EMA trend aligned",
+        "15m BOS: bearish_bos",
+        "Chart: Symmetrical Triangle",
+        "TL bounce: resistance"
+      ],
+      "won": "False",
+      "open_time": "2024-01-03 05:55:00",
+      "close_time": "2024-01-03 06:15:00"
     }
   ],
   "reason_stats": {
     "EMA trend aligned": {
-      "wins": 1,
-      "losses": 4,
-      "pnl": -10.2902
+      "wins": 2,
+      "losses": 8,
+      "pnl": -34.9056
     },
     "15m BOS: bullish_bos": {
       "wins": 1,
@@ -115,24 +204,39 @@
       "pnl": 42.159
     },
     "15m BOS: bearish_bos": {
-      "wins": 0,
-      "losses": 4,
-      "pnl": -52.4492
+      "wins": 1,
+      "losses": 8,
+      "pnl": -77.0646
     },
     "Chart: Symmetrical Triangle": {
       "wins": 0,
-      "losses": 4,
-      "pnl": -52.4492
+      "losses": 8,
+      "pnl": -120.436
     },
     "TL break: support": {
       "wins": 0,
-      "losses": 4,
-      "pnl": -52.4492
+      "losses": 5,
+      "pnl": -53.5836
     },
     "Candle: Bearish Harami": {
       "wins": 0,
       "losses": 1,
       "pnl": -18.9397
+    },
+    "Candle: Shooting Star": {
+      "wins": 1,
+      "losses": 0,
+      "pnl": 43.3714
+    },
+    "Liquidity sweep: highs": {
+      "wins": 1,
+      "losses": 0,
+      "pnl": 43.3714
+    },
+    "TL bounce: resistance": {
+      "wins": 1,
+      "losses": 1,
+      "pnl": 29.6619
     }
   },
   "pattern_stats": {
@@ -145,27 +249,43 @@
       "wins": 0,
       "losses": 1,
       "pnl": -18.9397
+    },
+    "Shooting Star": {
+      "wins": 1,
+      "losses": 0,
+      "pnl": 43.3714
     }
   },
   "chart_pattern_stats": {
     "Symmetrical Triangle": {
       "wins": 0,
-      "losses": 4,
-      "pnl": -52.4492
+      "losses": 8,
+      "pnl": -120.436
     }
   },
   "score_stats": {
     "5": {
       "wins": 1,
-      "losses": 3,
-      "pnl": 8.6495
+      "losses": 5,
+      "pnl": -6.1944
     },
     "6": {
-      "wins": 0,
+      "wins": 1,
       "losses": 1,
-      "pnl": -18.9397
+      "pnl": 24.4317
+    },
+    "4": {
+      "wins": 0,
+      "losses": 2,
+      "pnl": -53.1429
     }
   },
-  "adaptive_weights": {},
-  "lessons": []
+  "adaptive_weights": {
+    "EMA trend aligned": 0.25,
+    "15m BOS: bearish_bos": 0.25,
+    "Chart: Symmetrical Triangle": 0.25
+  },
+  "lessons": [
+    "AVOID chart pat. 'Symmetrical Triangle': 0% WR (8 trades)"
+  ]
 }
