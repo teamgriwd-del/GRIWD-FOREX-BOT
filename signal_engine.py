@@ -195,18 +195,21 @@ def generate_signal(data: dict, timestamp: pd.Timestamp = None,
         reasons = []
 
         # ── Base confluence factors ───────────────────────────────────────────
+        # Structural reasons (trend + structure break) use max(1.0, adaptive_weight)
+        # so they can only be BOOSTED by learning, never penalised below base.
+        # This guarantees EMA(2)+BOS(1)+CS(1)=4 is always reachable.
         if ema_trend_ok:
             r = "EMA trend aligned"
-            score += SCORE_WEIGHTS["trend_align"] * aw.get(r, 1.0)
+            score += SCORE_WEIGHTS["trend_align"] * max(1.0, aw.get(r, 1.0))
             reasons.append(r)
         elif ms_trend_ok:
             r = f"1h trend: {ms_1h.trend}"
-            score += SCORE_WEIGHTS["trend_align"] * aw.get(r, 1.0)
+            score += SCORE_WEIGHTS["trend_align"] * max(1.0, aw.get(r, 1.0))
             reasons.append(r)
 
         if bos_ok:
             r = f"15m BOS: {ms_15m.last_bos}"
-            score += SCORE_WEIGHTS["structure_break"] * aw.get(r, 1.0)
+            score += SCORE_WEIGHTS["structure_break"] * max(1.0, aw.get(r, 1.0))
             reasons.append(r)
 
         if fvg_ok:
@@ -217,7 +220,7 @@ def generate_signal(data: dict, timestamp: pd.Timestamp = None,
         if cs_ok:
             p_list = bullish_cs if direction == "buy" else bearish_cs
             r = f"Candle: {p_list[0]['pattern']}"
-            score += SCORE_WEIGHTS["pattern_reversal"] * aw.get(r, 1.0)
+            score += SCORE_WEIGHTS["pattern_reversal"] * max(1.0, aw.get(r, 1.0))
             reasons.append(r)
 
         if chart_ok:
