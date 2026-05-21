@@ -20,6 +20,12 @@ from config import (
 )
 
 
+# Module-level cache — chart patterns and trend lines don't change every bar
+_cache: dict = {}
+_CHART_INTERVAL = 5   # recompute chart patterns every N bars
+_ZONE_INTERVAL  = 10  # recompute trend lines / zone map every N bars
+
+
 @dataclass
 class TradeSignal:
     direction: str           # "buy" | "sell"
@@ -121,12 +127,21 @@ def generate_signal(data: dict, timestamp: pd.Timestamp = None,
     bullish_cs  = [p for p in cs_patterns if p["direction"] == "bullish"]
     bearish_cs  = [p for p in cs_patterns if p["direction"] == "bearish"]
 
-    chart_sigs  = chart_module.scan_all(df_15m, atr_5m)
+    # Chart patterns: recompute every CHART_INTERVAL bars (they form slowly)
+    chart_key = len(df_15m)
+    if chart_key - _cache.get("chart_bar", -_CHART_INTERVAL) >= _CHART_INTERVAL:
+        _cache["chart_sigs"] = chart_module.scan_all(df_15m, atr_5m)
+        _cache["chart_bar"]  = chart_key
+    chart_sigs  = _cache.get("chart_sigs", [])
     bull_charts = [s for s in chart_sigs if s.direction == "bullish" and s.confirmed]
     bear_charts = [s for s in chart_sigs if s.direction == "bearish" and s.confirmed]
 
-    # Build zone map (trend lines, order blocks, etc.) from 5m data
-    zone_map = zd_module.build_zone_map(df_5m, df_5m["atr"])
+    # Zone map (trend lines, OBs): recompute every ZONE_INTERVAL bars
+    zone_key = len(df_5m)
+    if zone_key - _cache.get("zone_bar", -_ZONE_INTERVAL) >= _ZONE_INTERVAL:
+        _cache["zone_map"] = zd_module.build_zone_map(df_5m, df_5m["atr"])
+        _cache["zone_bar"] = zone_key
+    zone_map = _cache.get("zone_map") or zd_module.build_zone_map(df_5m, df_5m["atr"])
 
     # Adaptive weights from TradeMemory: reason_string → multiplier
     aw = memory.get_adaptive_weights() if memory else {}

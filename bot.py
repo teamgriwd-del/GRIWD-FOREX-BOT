@@ -193,7 +193,7 @@ def run_learning_test(args):
         memory = TradeMemory(mem_file)
         rm = RiskManager(memory=memory)
 
-        WIN = 300   # analysis window — keeps each analyze() call O(1) not O(n)
+        WIN = 150   # analysis window — keeps each analyze() call O(1) not O(n)
         for i in range(WARMUP, len(df5)):
             ts = df5.index[i]
             pr = df5["close"].iloc[i]

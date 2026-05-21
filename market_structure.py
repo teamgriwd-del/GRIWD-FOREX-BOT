@@ -51,20 +51,28 @@ class MarketStructure:
 # ── Swing Detection ───────────────────────────────────────────────────────────
 
 def find_swings(df: pd.DataFrame, lookback: int = SWING_LOOKBACK) -> tuple[list, list]:
-    """Return (swing_highs, swing_lows) as SwingPoint lists."""
+    """Return (swing_highs, swing_lows) as SwingPoint lists.
+    Uses pandas rolling max/min — O(n) vs the previous O(n*lookback) Python loop."""
     highs, lows = [], []
+    n = len(df)
+    if n <= 2 * lookback:
+        return highs, lows
+
     hi = df["high"].values
     lo = df["low"].values
     ts = df.index
+    win = 2 * lookback + 1
 
-    for i in range(lookback, len(df) - lookback):
-        if all(hi[i] > hi[i - j] for j in range(1, lookback + 1)) and \
-           all(hi[i] > hi[i + j] for j in range(1, lookback + 1)):
+    hi_s = pd.Series(hi)
+    lo_s = pd.Series(lo)
+    roll_max = hi_s.rolling(win, center=True).max().values
+    roll_min = lo_s.rolling(win, center=True).min().values
+
+    for i in range(lookback, n - lookback):
+        if hi[i] == roll_max[i]:
             highs.append(SwingPoint(i, hi[i], "high", ts[i]))
-
-        if all(lo[i] < lo[i - j] for j in range(1, lookback + 1)) and \
-           all(lo[i] < lo[i + j] for j in range(1, lookback + 1)):
-            lows.append(SwingPoint(i, lo[i], "low", ts[i]))
+        if lo[i] == roll_min[i]:
+            lows.append(SwingPoint(i, lo[i], "low", ts[i]))\
 
     return highs, lows
 
@@ -122,44 +130,46 @@ def detect_bos(df: pd.DataFrame,
 
 # ── Fair Value Gap Detection ──────────────────────────────────────────────────
 
-def find_fvgs(df: pd.DataFrame) -> list:
+def find_fvgs(df: pd.DataFrame, lookback: int = 60) -> list:
     """
     Bullish FVG: candle[i-1].high < candle[i+1].low (gap up).
     Bearish FVG: candle[i-1].low  > candle[i+1].high (gap down).
+    Only scans the last `lookback` bars — older FVGs are rarely tradeable.
+    Uses numpy vectorised fill-check instead of Python inner loop.
     """
+    # Only look at the most recent window for new FVGs
+    start = max(1, len(df) - lookback)
     fvgs = []
     hi = df["high"].values
     lo = df["low"].values
+    close = df["close"].values
     ts = df.index
 
-    for i in range(1, len(df) - 1):
-        # Bullish: gap between candle i-1 top and candle i+1 bottom
+    for i in range(start, len(df) - 1):
         if hi[i - 1] < lo[i + 1]:
-            fvgs.append(FVG(
+            fvg = FVG(
                 start_idx=i - 1, end_idx=i + 1,
                 top=lo[i + 1], bottom=hi[i - 1],
                 direction="bullish",
                 timestamp=ts[i],
-            ))
-        # Bearish: gap between candle i-1 bottom and candle i+1 top
+            )
         elif lo[i - 1] > hi[i + 1]:
-            fvgs.append(FVG(
+            fvg = FVG(
                 start_idx=i - 1, end_idx=i + 1,
                 top=lo[i - 1], bottom=hi[i + 1],
                 direction="bearish",
                 timestamp=ts[i],
-            ))
+            )
+        else:
+            continue
 
-    # Mark filled FVGs
-    close = df["close"].values
-    for fvg in fvgs:
-        for j in range(fvg.end_idx + 1, len(df)):
-            if fvg.direction == "bullish" and close[j] < fvg.bottom:
-                fvg.filled = True
-                break
-            if fvg.direction == "bearish" and close[j] > fvg.top:
-                fvg.filled = True
-                break
+        # Vectorised fill check — numpy is ~100x faster than a Python loop
+        future = close[fvg.end_idx + 1:]
+        if fvg.direction == "bullish":
+            fvg.filled = bool(np.any(future < fvg.bottom))
+        else:
+            fvg.filled = bool(np.any(future > fvg.top))
+        fvgs.append(fvg)
 
     return fvgs
 

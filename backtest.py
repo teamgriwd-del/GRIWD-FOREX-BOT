@@ -36,7 +36,7 @@ def run_backtest(data: dict = None, verbose: bool = False) -> dict:
           f"from {df_5m.index[0]} to {df_5m.index[-1]}")
     print("-" * 65)
 
-    WIN = 300   # analysis window — keeps each analyze() call O(1) not O(n)
+    WIN = 150   # analysis window — keeps each analyze() call O(1) not O(n)
     for i in range(WARMUP_BARS, len(df_5m)):
         ts        = df_5m.index[i]
         price     = df_5m["close"].iloc[i]
