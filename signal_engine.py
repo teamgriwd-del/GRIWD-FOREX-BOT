@@ -123,9 +123,15 @@ def generate_signal(data: dict, timestamp: pd.Timestamp = None,
     current_bar   = len(df_5m) - 1
     ts = timestamp or df_5m.index[-1]
 
+    # Patterns proven to lose money — hard-blocked regardless of score
+    _BAD_CS      = {"Bullish Engulfing", "Bearish Engulfing", "Evening Star"}
+    _BAD_CHART   = {"Head & Shoulders"}
+
     cs_patterns = cp_module.scan_all(df_5m, atr_5m)
-    bullish_cs  = [p for p in cs_patterns if p["direction"] == "bullish"]
-    bearish_cs  = [p for p in cs_patterns if p["direction"] == "bearish"]
+    bullish_cs  = [p for p in cs_patterns
+                   if p["direction"] == "bullish" and p["pattern"] not in _BAD_CS]
+    bearish_cs  = [p for p in cs_patterns
+                   if p["direction"] == "bearish" and p["pattern"] not in _BAD_CS]
 
     # Chart patterns: recompute every CHART_INTERVAL bars (they form slowly)
     chart_key = len(df_15m)
@@ -133,8 +139,12 @@ def generate_signal(data: dict, timestamp: pd.Timestamp = None,
         _cache["chart_sigs"] = chart_module.scan_all(df_15m, atr_5m)
         _cache["chart_bar"]  = chart_key
     chart_sigs  = _cache.get("chart_sigs", [])
-    bull_charts = [s for s in chart_sigs if s.direction == "bullish" and s.confirmed]
-    bear_charts = [s for s in chart_sigs if s.direction == "bearish" and s.confirmed]
+    bull_charts = [s for s in chart_sigs
+                   if s.direction == "bullish" and s.confirmed
+                   and s.pattern not in _BAD_CHART]
+    bear_charts = [s for s in chart_sigs
+                   if s.direction == "bearish" and s.confirmed
+                   and s.pattern not in _BAD_CHART]
 
     # Zone map (trend lines, OBs): recompute every ZONE_INTERVAL bars
     zone_key = len(df_5m)
