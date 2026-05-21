@@ -38,7 +38,7 @@ logging.basicConfig(
 )
 log = logging.getLogger("CTCFx")
 
-SCAN_INTERVAL = 60      # seconds between full multi-symbol scans
+SCAN_INTERVAL = 30      # seconds between full multi-symbol scans
 BARS_PER_TF   = {ENTRY_TF: 300, CONFIRM_TF: 200, TREND_TF: 150}
 
 # ticket -> metadata dict, keyed per symbol
