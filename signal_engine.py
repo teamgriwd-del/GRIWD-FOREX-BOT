@@ -6,6 +6,7 @@ Scores each potential trade and fires only when score >= SIGNAL_THRESHOLD.
 """
 
 import pandas as pd
+import logging
 from dataclasses import dataclass, field
 from typing import Optional
 
@@ -13,6 +14,8 @@ import market_structure as ms_module
 import candlestick_patterns as cp_module
 import chart_patterns as chart_module
 import zone_detector as zd_module
+
+_log = logging.getLogger("GRIWD")
 from config import (
     SIGNAL_THRESHOLD, LIVE_SIGNAL_THRESHOLD, SCORE_WEIGHTS, REWARD_RISK_RATIO,
     TL_BOUNCE_TOLERANCE, TL_QUALITY_THRESHOLD, TL_BREAK_BUFFER,
@@ -191,6 +194,10 @@ def generate_signal(data: dict, timestamp: pd.Timestamp = None,
         # Require at least one concrete entry trigger — pattern or structure break.
         # BOS alone (no pattern) or pattern alone (no structure) is not enough.
         if not (cs_ok or chart_ok) and not bos_ok:
+            if MODE.mode != "backtest":
+                _log.info(f"    [{direction}] blocked — no pattern or BOS  "
+                          f"(cs={cs_ok} bos={bos_ok} chart={chart_ok}  "
+                          f"ema_ok={ema_trend_ok}  1h_trend={ms_1h.trend})")
             continue
 
         score   = 0.0
@@ -279,6 +286,8 @@ def generate_signal(data: dict, timestamp: pd.Timestamp = None,
 
         threshold = LIVE_SIGNAL_THRESHOLD if MODE.mode != "backtest" else SIGNAL_THRESHOLD
         if score < threshold:
+            if MODE.mode != "backtest" and score > 0:
+                _log.info(f"    [{direction}] score={score:.1f}/{threshold} — {' | '.join(reasons)}")
             continue
 
         # ── Build trade levels ────────────────────────────────────────────────
