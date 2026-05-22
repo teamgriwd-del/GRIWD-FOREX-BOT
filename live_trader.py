@@ -132,6 +132,7 @@ def scan_symbol(symbol: str, balance: float, dry_run: bool, now: datetime):
 
     atr_now = data[ENTRY_TF]["atr"].iloc[-1]
     price   = data[ENTRY_TF]["close"].iloc[-1]
+    log.info(f"  [{symbol}] scanning  price={price:.2f}  atr={atr_now:.2f}")
 
     signal = generate_signal(data, timestamp=now, memory=_memory)
     if signal is None:
