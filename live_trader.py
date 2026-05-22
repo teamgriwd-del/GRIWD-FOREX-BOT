@@ -6,9 +6,10 @@ on each cycle. Manages positions per symbol independently.
 
 import time
 import logging
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from collections import defaultdict
 
+import MetaTrader5 as mt5
 import mt5_connector as mt5c
 from signal_engine import generate_signal
 from trade_memory import TradeMemory
@@ -38,11 +39,14 @@ logging.basicConfig(
 )
 log = logging.getLogger("GRIWD")
 
-SCAN_INTERVAL = 30      # seconds between full multi-symbol scans
-BARS_PER_TF   = {ENTRY_TF: 300, CONFIRM_TF: 200, TREND_TF: 150}
+SCAN_INTERVAL    = 30      # seconds between full multi-symbol scans
+BARS_PER_TF      = {ENTRY_TF: 300, CONFIRM_TF: 200, TREND_TF: 150}
+EOD_SUMMARY_HOUR = 23      # UTC hour to print the end-of-day learning report
 
 # ticket -> metadata dict, keyed per symbol
 open_tickets: dict[str, dict] = defaultdict(dict)
+_eod_reported_date: str = ""   # tracks which date we already printed the EOD report
+_live_trades_today: list = []  # closed live trades recorded this session
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
@@ -73,14 +77,70 @@ def fetch_data(symbol: str) -> dict | None:
 
 # ── Position Management ───────────────────────────────────────────────────────
 
+def _fetch_close_pnl(ticket: int, open_time: datetime) -> tuple:
+    """Fetch closing deal from MT5 history. Returns (pnl, close_price, status)."""
+    try:
+        from_dt = open_time - timedelta(minutes=5)
+        to_dt   = datetime.now(tz=timezone.utc) + timedelta(minutes=2)
+        deals   = mt5.history_deals_get(from_dt, to_dt) or []
+        for d in deals:
+            if d.position_id == ticket and d.entry == mt5.DEAL_ENTRY_OUT:
+                status = "tp_hit" if d.profit > 0 else "sl_hit"
+                return round(d.profit, 4), d.price, status
+    except Exception:
+        pass
+    return None, None, "unknown"
+
+
+def _record_closed_trade(sym: str, ticket: int, meta: dict):
+    """Feed a closed live trade back into TradeMemory so the bot learns from it."""
+    pnl, close_price, status = _fetch_close_pnl(ticket, meta.get("time", datetime.now(tz=timezone.utc)))
+    if pnl is None:
+        return
+
+    won = pnl > 0
+    result_tag = "WIN ✅" if won else "LOSS ❌"
+    log.info(f"  [{sym}] {result_tag}  ticket={ticket}  pnl={'+' if pnl>=0 else ''}{pnl:.2f}"
+             f"  entry={meta.get('entry',0):.2f}→close={close_price:.2f}"
+             f"  reasons: {' | '.join(meta.get('reasons', []))}")
+
+    # Build a lightweight trade record that TradeMemory.record_trade() accepts
+    class _LiveRecord:
+        pass
+
+    rec = _LiveRecord()
+    rec.id           = ticket
+    rec.direction    = meta.get("direction", "buy")
+    rec.pnl          = pnl
+    rec.status       = status
+    rec.pattern      = meta.get("pattern", "")
+    rec.chart_pattern= meta.get("chart_pattern", "")
+    rec.score        = meta.get("score", 4.0)
+    rec.reasons      = meta.get("reasons", [])
+    rec.open_time    = meta.get("time", datetime.now(tz=timezone.utc))
+    rec.close_time   = datetime.now(tz=timezone.utc)
+
+    _memory.record_trade(rec)
+    _live_trades_today.append({"sym": sym, "pnl": pnl, "won": won,
+                               "status": status, "reasons": rec.reasons,
+                               "pattern": rec.pattern, "score": rec.score})
+
+    # Log any new weight adjustments that just triggered
+    lessons = _memory.get_lessons()
+    if lessons:
+        for lesson in lessons:
+            log.info(f"  [LEARN] {lesson}")
+
+
 def sync_positions(symbols: list):
-    """Remove tickets that MT5 already closed (SL/TP hit)."""
+    """Remove tickets that MT5 already closed (SL/TP hit) and learn from outcomes."""
     live = {p.ticket for p in mt5c.get_open_positions()}
     for sym in symbols:
         closed = [t for t in open_tickets[sym] if t not in live]
         for t in closed:
             meta = open_tickets[sym].pop(t)
             log.info(f"  [{sym}] Position closed by MT5: ticket={t} dir={meta['direction']}")
+            _record_closed_trade(sym, t, meta)
 
 
 def update_trailing(symbols: list):
@@ -164,14 +224,64 @@ def scan_symbol(symbol: str, balance: float, dry_run: bool, now: datetime):
     )
     if result:
         open_tickets[symbol][result["ticket"]] = {
-            "direction": signal.direction,
-            "sl"       : signal.stop_loss,
-            "tp"       : signal.take_profit,
-            "atr"      : atr_now,
-            "entry"    : signal.entry,
-            "lot"      : lot,
-            "time"     : now,
+            "direction"    : signal.direction,
+            "sl"           : signal.stop_loss,
+            "tp"           : signal.take_profit,
+            "atr"          : atr_now,
+            "entry"        : signal.entry,
+            "lot"          : lot,
+            "time"         : now,
+            # Signal metadata — used when the trade closes to teach the memory
+            "reasons"      : list(signal.reasons),
+            "pattern"      : signal.pattern,
+            "chart_pattern": signal.chart_pattern,
+            "score"        : signal.score,
         }
+
+
+# ── End-of-Day Learning Report ────────────────────────────────────────────────
+
+def _print_eod_learning_report(date_str: str):
+    """Print what the bot learned today from live trades and log updated weights."""
+    W = 65
+    today = [t for t in _live_trades_today]
+    log.info("=" * W)
+    log.info(f"  GRIWD BOT — END-OF-DAY LEARNING REPORT  [{date_str}]")
+    log.info("=" * W)
+
+    if not today:
+        log.info("  No live trades recorded today.")
+    else:
+        wins   = [t for t in today if t["won"]]
+        losses = [t for t in today if not t["won"]]
+        pnl    = sum(t["pnl"] for t in today)
+        wr     = len(wins) / len(today) * 100 if today else 0
+        log.info(f"  Live trades today  : {len(today)}")
+        log.info(f"  Win / Loss         : {len(wins)} / {len(losses)}  ({wr:.1f}% WR)")
+        log.info(f"  Net P&L today      : {'+'if pnl>=0 else ''}{pnl:.2f}")
+
+    log.info(f"  Total memory trades: {_memory._data.get('total_trades', 0)}")
+
+    # Active weight adjustments
+    weights = _memory.get_adaptive_weights()
+    adjusted = {r: m for r, m in weights.items() if m != 1.0}
+    if adjusted:
+        log.info("  Active weight adjustments:")
+        for reason, mult in sorted(adjusted.items(), key=lambda x: x[1]):
+            arrow = "BOOST" if mult > 1.0 else "PENALIZE"
+            log.info(f"    {reason:42s}  x{mult:.2f}  {arrow}")
+
+    # Lessons
+    lessons = _memory.get_lessons()
+    if lessons:
+        log.info("  Lessons learned (cumulative):")
+        for lesson in lessons:
+            log.info(f"    • {lesson}")
+    else:
+        log.info("  No lessons flagged yet — keep trading to build the memory.")
+
+    log.info("=" * W)
+    _live_trades_today.clear()
 
 
 # ── Main Loop ─────────────────────────────────────────────────────────────────
@@ -230,6 +340,7 @@ def run_live(symbols: list = None, dry_run: bool = False):
             log.info(f"    • {lesson}")
 
     consecutive_errors = 0
+    global _eod_reported_date
 
     while True:
         try:
@@ -244,6 +355,12 @@ def run_live(symbols: list = None, dry_run: bool = False):
             max_trades = LIVE_MAX_OPEN_TRADES if MODE.mode != "backtest" else MAX_OPEN_TRADES
             log.info(f"--- Scan cycle | balance=${balance:.2f}  "
                      f"open={total_open}/{max_trades} [{MODE.mode}] ---")
+
+            # ── End-of-day learning report ─────────────────────────────────────
+            today_str = now.strftime("%Y-%m-%d")
+            if now.hour >= EOD_SUMMARY_HOUR and _eod_reported_date != today_str:
+                _eod_reported_date = today_str
+                _print_eod_learning_report(today_str)
 
             # ── Scan every symbol ──────────────────────────────────────────────
             for sym in active_symbols:
