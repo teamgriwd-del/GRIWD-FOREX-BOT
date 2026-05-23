@@ -1,5 +1,5 @@
 """
-Zone Chart — Interactive Plotly chart for the CTCFx Bot
+Zone Chart — Interactive Plotly chart for the GRIWD Bot
 Draws on the LIVE MT5 5m chart:
   - Candlesticks
   - Buy Zones (green)       - Sell Zones (red)
@@ -325,7 +325,7 @@ def build_chart(df_5m: pd.DataFrame, symbol: str,
 
     fig.update_layout(
         title=dict(
-            text=f"<b>CTCFx Bot — {symbol} | 5m Entry Chart</b>"
+            text=f"<b>GRIWD Bot — {symbol} | 5m Entry Chart</b>"
                  f"   <span style='color:#aaa;font-size:13px'>"
                  f"Price: {last_price:.2f}  |  ATR: {atr_val:.2f}  |  "
                  f"TF: 5m entry / 15m confirm / 1h trend</span>",
@@ -407,7 +407,7 @@ def open_chart(symbol: str, tf: str = "5m", n_bars: int = 300):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="CTCFx Zone Chart")
+    parser = argparse.ArgumentParser(description="GRIWD Zone Chart")
     parser.add_argument("--symbol", type=str, default="FX Vol 60",
                         help="Symbol to chart (default: FX Vol 60)")
     parser.add_argument("--tf",     type=str, default="5m",

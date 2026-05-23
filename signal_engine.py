@@ -1,17 +1,32 @@
 """
 Signal Engine: Multi-Timeframe Confluence Scoring
-Combines 1h trend, 15m structure, 5m candlestick/chart patterns.
+Combines 1h trend, 15m structure, 5m candlestick/chart patterns,
+trend-line bounce/break signals, and adaptive learning weights.
 Scores each potential trade and fires only when score >= SIGNAL_THRESHOLD.
 """
 
 import pandas as pd
+import logging
 from dataclasses import dataclass, field
 from typing import Optional
 
 import market_structure as ms_module
 import candlestick_patterns as cp_module
 import chart_patterns as chart_module
-from config import SIGNAL_THRESHOLD, SCORE_WEIGHTS, REWARD_RISK_RATIO
+import zone_detector as zd_module
+
+_log = logging.getLogger("GRIWD")
+from config import (
+    SIGNAL_THRESHOLD, LIVE_SIGNAL_THRESHOLD, SCORE_WEIGHTS, REWARD_RISK_RATIO,
+    TL_BOUNCE_TOLERANCE, TL_QUALITY_THRESHOLD, TL_BREAK_BUFFER,
+    SWING_SL_BUFFER, MAX_SL_ATR, STOP_ATR_MULT, MODE,
+)
+
+
+# Module-level cache — chart patterns and trend lines don't change every bar
+_cache: dict = {}
+_CHART_INTERVAL = 5   # recompute chart patterns every N bars
+_ZONE_INTERVAL  = 10  # recompute trend lines / zone map every N bars
 
 
 @dataclass
@@ -20,7 +35,7 @@ class TradeSignal:
     entry: float
     stop_loss: float
     take_profit: float
-    score: int
+    score: float
     reasons: list = field(default_factory=list)
     pattern: str = ""
     chart_pattern: str = ""
@@ -37,6 +52,8 @@ class TradeSignal:
         return (reward / risk) if risk > 0 else 0.0
 
 
+# ── Helpers ───────────────────────────────────────────────────────────────────
+
 def _price_in_fvg(price: float, ms: ms_module.MarketStructure, direction: str) -> bool:
     for fvg in ms.fvgs:
         if fvg.filled:
@@ -46,17 +63,51 @@ def _price_in_fvg(price: float, ms: ms_module.MarketStructure, direction: str) -
     return False
 
 
-def _near_equilibrium(price: float, ms: ms_module.MarketStructure,
-                      atr: float) -> bool:
+def _near_equilibrium(price: float, ms: ms_module.MarketStructure, atr: float) -> bool:
     if ms.equilibrium is None:
         return False
     return abs(price - ms.equilibrium) < atr * 0.5
 
 
-def generate_signal(data: dict, timestamp: pd.Timestamp = None) -> Optional[TradeSignal]:
+def _calculate_levels(direction: str, price: float, atr: float,
+                      ms: ms_module.MarketStructure) -> tuple:
     """
-    data: {"1h": df_1h, "15m": df_15m, "5m": df_5m}
-    Each df has "atr" column. Returns TradeSignal or None.
+    SL placed at the nearest recent swing point with a small ATR buffer,
+    capped at MAX_SL_ATR so risk never blows out.
+    TP derived from actual risk distance × RR ratio.
+    """
+    if direction == "buy":
+        recent_lows = ms.swing_lows[-5:] if ms.swing_lows else []
+        if recent_lows:
+            swing_low = min(sl.price for sl in recent_lows)
+            sl = swing_low - atr * SWING_SL_BUFFER
+            sl = max(sl, price - atr * MAX_SL_ATR)   # hard cap
+        else:
+            sl = price - atr * STOP_ATR_MULT
+        risk = price - sl
+        tp   = price + risk * REWARD_RISK_RATIO
+    else:
+        recent_highs = ms.swing_highs[-5:] if ms.swing_highs else []
+        if recent_highs:
+            swing_high = max(sh.price for sh in recent_highs)
+            sl = swing_high + atr * SWING_SL_BUFFER
+            sl = min(sl, price + atr * MAX_SL_ATR)
+        else:
+            sl = price + atr * STOP_ATR_MULT
+        risk = sl - price
+        tp   = price - risk * REWARD_RISK_RATIO
+
+    return sl, tp
+
+
+# ── Signal Generation ─────────────────────────────────────────────────────────
+
+def generate_signal(data: dict, timestamp: pd.Timestamp = None,
+                    memory=None) -> Optional[TradeSignal]:
+    """
+    data   : {"1h": df_1h, "15m": df_15m, "5m": df_5m}
+    memory : TradeMemory instance — provides adaptive weight multipliers.
+    Returns TradeSignal or None.
     """
     df_1h  = data["1h"]
     df_15m = data["15m"]
@@ -65,87 +116,190 @@ def generate_signal(data: dict, timestamp: pd.Timestamp = None) -> Optional[Trad
     if df_5m.empty or df_15m.empty or df_1h.empty:
         return None
 
-    atr_5m  = df_5m["atr"].iloc[-1]  if not df_5m["atr"].isna().all()  else 1.0
-    atr_1h  = df_1h["atr"].iloc[-1]  if not df_1h["atr"].isna().all()  else 1.0
+    atr_5m = df_5m["atr"].iloc[-1] if not df_5m["atr"].isna().all() else 1.0
 
-    # ── Market structure on each timeframe ────────────────────────────────────
     ms_1h  = ms_module.analyze(df_1h,  df_1h["atr"])
     ms_15m = ms_module.analyze(df_15m, df_15m["atr"])
     ms_5m  = ms_module.analyze(df_5m,  df_5m["atr"])
 
     current_price = df_5m["close"].iloc[-1]
+    current_bar   = len(df_5m) - 1
     ts = timestamp or df_5m.index[-1]
 
-    # ── Candlestick patterns on 5m ─────────────────────────────────────────────
+    # Patterns proven to lose money across 2000+ trades — hard-blocked
+    _BAD_CS      = {"Bullish Engulfing", "Bearish Engulfing", "Evening Star", "Hammer",
+                    "Dragonfly Doji", "Gravestone Doji", "Bearish Harami",
+                    "Bullish Harami", "Morning Star", "Tweezer Bottom"}
+    _BAD_CHART   = {"Head & Shoulders"}
+
     cs_patterns = cp_module.scan_all(df_5m, atr_5m)
-    bullish_cs  = [p for p in cs_patterns if p["direction"] == "bullish"]
-    bearish_cs  = [p for p in cs_patterns if p["direction"] == "bearish"]
+    bullish_cs  = [p for p in cs_patterns
+                   if p["direction"] == "bullish" and p["pattern"] not in _BAD_CS]
+    bearish_cs  = [p for p in cs_patterns
+                   if p["direction"] == "bearish" and p["pattern"] not in _BAD_CS]
 
-    # ── Chart patterns on 15m ─────────────────────────────────────────────────
-    chart_sigs   = chart_module.scan_all(df_15m, atr_5m)
-    bull_charts  = [s for s in chart_sigs if s.direction == "bullish" and s.confirmed]
-    bear_charts  = [s for s in chart_sigs if s.direction == "bearish" and s.confirmed]
+    # Chart patterns: recompute every CHART_INTERVAL bars (they form slowly)
+    chart_key = len(df_15m)
+    if chart_key - _cache.get("chart_bar", -_CHART_INTERVAL) >= _CHART_INTERVAL:
+        _cache["chart_sigs"] = chart_module.scan_all(df_15m, atr_5m)
+        _cache["chart_bar"]  = chart_key
+    chart_sigs  = _cache.get("chart_sigs", [])
+    bull_charts = [s for s in chart_sigs
+                   if s.direction == "bullish" and s.confirmed
+                   and s.pattern not in _BAD_CHART]
+    bear_charts = [s for s in chart_sigs
+                   if s.direction == "bearish" and s.confirmed
+                   and s.pattern not in _BAD_CHART]
 
-    # ── Score both buy and sell scenarios ─────────────────────────────────────
+    # Zone map (trend lines, OBs): recompute every ZONE_INTERVAL bars
+    zone_key = len(df_5m)
+    if zone_key - _cache.get("zone_bar", -_ZONE_INTERVAL) >= _ZONE_INTERVAL:
+        _cache["zone_map"] = zd_module.build_zone_map(df_5m, df_5m["atr"])
+        _cache["zone_bar"] = zone_key
+    zone_map = _cache.get("zone_map") or zd_module.build_zone_map(df_5m, df_5m["atr"])
+
+    # Adaptive weights from TradeMemory: reason_string → multiplier
+    aw = memory.get_adaptive_weights() if memory else {}
+
+    # ── Macro trend filter via 50-period 1h EMA ───────────────────────────────
+    # Prevents selling into a bull market or buying into a bear market when the
+    # 1h swing-based classifier returns "unknown" instead of the true trend.
+    ema_1h = df_1h["close"].ewm(span=50, adjust=False).mean().iloc[-1]
+    price_above_ema = current_price > ema_1h
+
     for direction in ("buy", "sell"):
-        cs_dir       = "bullish" if direction == "buy" else "bearish"
+        # Block counter-EMA entries unless swing structure confirms the direction
+        if direction == "sell" and price_above_ema and ms_1h.trend != "downtrend":
+            continue
+        if direction == "buy" and not price_above_ema and ms_1h.trend != "uptrend":
+            continue
+
+        cs_dir      = "bullish" if direction == "buy" else "bearish"
+        # EMA-based trend alignment: fires ~50% of bars (much more useful than
+        # swing-based uptrend/downtrend which is near-zero in synthetic data)
+        ema_trend_ok = (price_above_ema if direction == "buy" else not price_above_ema)
         ms_trend_ok  = (ms_1h.trend == "uptrend"   if direction == "buy"
                         else ms_1h.trend == "downtrend")
-        bos_ok       = (ms_15m.last_bos == "bullish_bos" if direction == "buy"
-                        else ms_15m.last_bos == "bearish_bos")
-        sweep_ok     = (ms_5m.liquidity_swept == "lows"  if direction == "buy"
-                        else ms_5m.liquidity_swept == "highs")
-        cs_ok        = bool(bullish_cs if direction == "buy" else bearish_cs)
-        chart_ok     = bool(bull_charts if direction == "buy" else bear_charts)
-        fvg_ok       = _price_in_fvg(current_price, ms_1h, cs_dir)
-        eq_ok        = _near_equilibrium(current_price, ms_5m, atr_5m)
+        bos_ok      = (ms_15m.last_bos == "bullish_bos" if direction == "buy"
+                       else ms_15m.last_bos == "bearish_bos")
+        sweep_ok    = (ms_5m.liquidity_swept == "lows"  if direction == "buy"
+                       else ms_5m.liquidity_swept == "highs")
+        cs_ok       = bool(bullish_cs if direction == "buy" else bearish_cs)
+        chart_ok    = bool(bull_charts if direction == "buy" else bear_charts)
+        fvg_ok      = _price_in_fvg(current_price, ms_1h, cs_dir)
+        eq_ok       = _near_equilibrium(current_price, ms_5m, atr_5m)
         consol_break = (ms_1h.trend == "consolidation" and
                         ms_15m.last_bos in ("bullish_bos", "bearish_bos"))
 
-        score = 0
-        reasons = []
-        if ms_trend_ok:
-            score += SCORE_WEIGHTS["trend_align"]
-            reasons.append(f"1h trend: {ms_1h.trend}")
-        if bos_ok:
-            score += SCORE_WEIGHTS["structure_break"]
-            reasons.append(f"15m BOS: {ms_15m.last_bos}")
-        if fvg_ok:
-            score += SCORE_WEIGHTS["fvg_entry"]
-            reasons.append("Price inside FVG")
-        if cs_ok:
-            score += SCORE_WEIGHTS["pattern_reversal"]
-            p_list = bullish_cs if direction == "buy" else bearish_cs
-            reasons.append(f"Candle: {p_list[0]['pattern']}")
-        if chart_ok:
-            score += SCORE_WEIGHTS["chart_pattern"]
-            c_list = bull_charts if direction == "buy" else bear_charts
-            reasons.append(f"Chart: {c_list[0].pattern}")
-        if consol_break:
-            score += SCORE_WEIGHTS["consolidation_break"]
-            reasons.append("Consolidation breakout")
-        if sweep_ok:
-            score += SCORE_WEIGHTS["liquidity_sweep"]
-            reasons.append(f"Liquidity sweep: {ms_5m.liquidity_swept}")
-        if eq_ok:
-            score += SCORE_WEIGHTS["equilibrium_zone"]
-            reasons.append("Price at equilibrium")
+        # Require at least one concrete entry trigger — pattern or structure break.
+        # BOS alone (no pattern) or pattern alone (no structure) is not enough.
+        if not (cs_ok or chart_ok) and not bos_ok:
+            if MODE.mode != "backtest":
+                _log.info(f"    [{direction}] blocked — no pattern or BOS  "
+                          f"(cs={cs_ok} bos={bos_ok} chart={chart_ok}  "
+                          f"ema_ok={ema_trend_ok}  1h_trend={ms_1h.trend})")
+            continue
 
-        if score < SIGNAL_THRESHOLD:
+        score   = 0.0
+        reasons = []
+
+        # ── Base confluence factors ───────────────────────────────────────────
+        # Structural reasons (trend + structure break) use max(1.0, adaptive_weight)
+        # so they can only be BOOSTED by learning, never penalised below base.
+        # This guarantees EMA(2)+BOS(1)+CS(1)=4 is always reachable.
+        if ema_trend_ok:
+            r = "EMA trend aligned"
+            score += SCORE_WEIGHTS["trend_align"] * max(1.0, aw.get(r, 1.0))
+            reasons.append(r)
+        elif ms_trend_ok:
+            r = f"1h trend: {ms_1h.trend}"
+            score += SCORE_WEIGHTS["trend_align"] * max(1.0, aw.get(r, 1.0))
+            reasons.append(r)
+
+        if bos_ok:
+            r = f"15m BOS: {ms_15m.last_bos}"
+            score += SCORE_WEIGHTS["structure_break"] * max(1.0, aw.get(r, 1.0))
+            reasons.append(r)
+
+        if fvg_ok:
+            r = "Price inside FVG"
+            score += SCORE_WEIGHTS["fvg_entry"] * aw.get(r, 1.0)
+            reasons.append(r)
+
+        if cs_ok:
+            p_list = bullish_cs if direction == "buy" else bearish_cs
+            r = f"Candle: {p_list[0]['pattern']}"
+            score += SCORE_WEIGHTS["pattern_reversal"] * max(1.0, aw.get(r, 1.0))
+            reasons.append(r)
+
+        if chart_ok:
+            c_list = bull_charts if direction == "buy" else bear_charts
+            r = f"Chart: {c_list[0].pattern}"
+            score += SCORE_WEIGHTS["chart_pattern"] * aw.get(r, 1.0)
+            reasons.append(r)
+
+        if consol_break:
+            r = "Consolidation breakout"
+            score += SCORE_WEIGHTS["consolidation_break"] * aw.get(r, 1.0)
+            reasons.append(r)
+
+        if sweep_ok:
+            r = f"Liquidity sweep: {ms_5m.liquidity_swept}"
+            score += SCORE_WEIGHTS["liquidity_sweep"] * aw.get(r, 1.0)
+            reasons.append(r)
+
+        if eq_ok:
+            r = "Price at equilibrium"
+            score += SCORE_WEIGHTS["equilibrium_zone"] * aw.get(r, 1.0)
+            reasons.append(r)
+
+        # ── Trend-line signals (each signal type fires at most once per direction)
+        for tl in zone_map.trend_lines:
+            if tl.quality < TL_QUALITY_THRESHOLD:
+                continue
+            tl_price = zd_module.trendline_price_at(tl, current_bar)
+            distance = abs(current_price - tl_price)
+
+            if not tl.broken:
+                if distance <= atr_5m * TL_BOUNCE_TOLERANCE:
+                    if direction == "buy" and tl.kind == "support_tl":
+                        r = "TL bounce: support"
+                    elif direction == "sell" and tl.kind == "resistance_tl":
+                        r = "TL bounce: resistance"
+                    else:
+                        r = None
+                    if r and r not in reasons:
+                        score += SCORE_WEIGHTS.get("tl_bounce", 1) * aw.get(r, 1.0)
+                        reasons.append(r)
+            else:
+                # Require price to be meaningfully beyond the line (anti-fakeout buffer)
+                break_min = atr_5m * TL_BREAK_BUFFER
+                if direction == "buy" and tl.kind == "resistance_tl" and current_price > tl_price + break_min:
+                    r = "TL break: resistance"
+                elif direction == "sell" and tl.kind == "support_tl" and current_price < tl_price - break_min:
+                    r = "TL break: support"
+                else:
+                    r = None
+                if r and r not in reasons:
+                    score += SCORE_WEIGHTS.get("tl_break", 1) * aw.get(r, 1.0)
+                    reasons.append(r)
+
+        threshold = LIVE_SIGNAL_THRESHOLD if MODE.mode != "backtest" else SIGNAL_THRESHOLD
+        if score < threshold:
+            if MODE.mode != "backtest" and score > 0:
+                _log.info(f"    [{direction}] score={score:.1f}/{threshold} — {' | '.join(reasons)}")
             continue
 
         # ── Build trade levels ────────────────────────────────────────────────
-        if direction == "buy":
-            stop_loss   = current_price - atr_5m * 1.5
-            take_profit = current_price + atr_5m * 1.5 * REWARD_RISK_RATIO
-        else:
-            stop_loss   = current_price + atr_5m * 1.5
-            take_profit = current_price - atr_5m * 1.5 * REWARD_RISK_RATIO
+        stop_loss, take_profit = _calculate_levels(
+            direction, current_price, atr_5m, ms_5m
+        )
 
-        # Override stop/TP from chart pattern if stronger signal
+        # Override SL/TP with chart-pattern levels only when memory trusts the pattern
         if chart_ok:
-            cs_ref = bull_charts[0] if direction == "buy" else bear_charts[0]
-            if cs_ref.confirmed:
+            cs_ref   = bull_charts[0] if direction == "buy" else bear_charts[0]
+            pat_mult = memory.get_pattern_mult("", cs_ref.pattern) if memory else 1.0
+            if cs_ref.confirmed and pat_mult >= 0.5:
                 stop_loss   = cs_ref.stop
                 take_profit = cs_ref.target
 
@@ -154,7 +308,7 @@ def generate_signal(data: dict, timestamp: pd.Timestamp = None) -> Optional[Trad
             entry=current_price,
             stop_loss=stop_loss,
             take_profit=take_profit,
-            score=score,
+            score=round(score, 2),
             reasons=reasons,
             pattern=(bullish_cs[0]["pattern"] if direction == "buy" and bullish_cs
                      else bearish_cs[0]["pattern"] if direction == "sell" and bearish_cs

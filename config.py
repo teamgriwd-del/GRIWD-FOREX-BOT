@@ -1,7 +1,46 @@
 """
-CTCFx Synthetic Trading Bot - Configuration
+GRIWD Forex Bot - Configuration
 Strategy: Multi-timeframe ICT/SMC with candlestick + chart pattern confluence
 """
+
+# ── Trading Mode & Account Type ───────────────────────────────────────────────
+# BotMode is a mutable singleton.  live_trader.py calls MODE.configure() at
+# startup so every module picks up the right thresholds automatically.
+class _BotMode:
+    """Runtime mode state — set once at startup, read everywhere."""
+    def __init__(self):
+        self.mode         = "backtest"  # "backtest" | "demo" | "live"
+        self.account_type = "standard"  # "micro" | "standard"
+
+    def configure(self, balance: float, is_live: bool = False, is_demo: bool = False):
+        """Detect account type from balance; set trading mode."""
+        self.account_type = "micro" if balance < MICRO_BALANCE_THRESHOLD else "standard"
+        if is_live:
+            self.mode = "live"
+        elif is_demo:
+            self.mode = "demo"
+
+    def __repr__(self):
+        return f"BotMode(mode={self.mode!r}, account_type={self.account_type!r})"
+
+MODE = _BotMode()
+
+# Accounts below this USD balance are treated as micro (adjust to your broker)
+MICRO_BALANCE_THRESHOLD = 1_000.0
+
+# ── Live / Demo conservative overrides ───────────────────────────────────────
+# Applied automatically when MODE.mode != "backtest".
+# Backtest uses the base values below to stay permissive and maximise learning.
+LIVE_SIGNAL_THRESHOLD  = 4      # require strongest confluence when real money is at stake
+LIVE_RISK_PER_TRADE    = 0.005  # 0.5% risk per trade (vs 1% in backtest)
+LIVE_MAX_OPEN_TRADES   = 2      # fewer concurrent positions when live/demo
+
+# ── Micro-account lot sizing ──────────────────────────────────────────────────
+# When MODE.account_type == "micro", position_size() uses these instead of
+# PIP_VALUE / CONTRACT_SIZE so lot amounts stay in micro-lot units.
+# Micro lot: $0.10 per price-unit per lot  (standard = $1.00)
+MICRO_PIP_VALUE        = 0.1    # $0.10 per price unit per micro lot
+MICRO_CONTRACT_SIZE    = 1.0    # lots are already expressed in micro lots
 
 # ── Timeframes ──────────────────────────────────────────────────────────────
 TREND_TF    = "1h"    # Higher timeframe: trend context
@@ -37,7 +76,7 @@ FALSE_BREAKOUT_BARS    = 3     # bars before reversal = fakeout
 
 # ── Multi-Timeframe Signal Scoring ────────────────────────────────────────────
 # Each confluence factor adds to score; trade fires when >= threshold
-SIGNAL_THRESHOLD       = 3     # minimum score to take a trade
+SIGNAL_THRESHOLD       = 4     # minimum score to take a trade
 SCORE_WEIGHTS = {
     "trend_align"       : 2,   # 1h trend matches trade direction
     "structure_break"   : 1,   # 15m structure break / BOS
@@ -47,14 +86,26 @@ SCORE_WEIGHTS = {
     "consolidation_break": 1,  # impulse out of consolidation range
     "liquidity_sweep"   : 1,   # sweep of prior high/low before entry
     "equilibrium_zone"  : 1,   # price at 50% of range (EQ)
+    "tl_bounce"         : 1,   # price bouncing off validated trend line
+    "tl_break"          : 1,   # momentum entry after trend line break
 }
+
+# ── Trend Line Quality ────────────────────────────────────────────────────────
+TL_BOUNCE_TOLERANCE    = 0.4    # price must be within X * ATR of trend line
+TL_QUALITY_THRESHOLD   = 0.3    # min quality score (0-1) to use a trend line
+TL_BREAK_BUFFER        = 0.25   # price must be >= X * ATR beyond line to count as break
+
+# ── Adaptive Learning ─────────────────────────────────────────────────────────
+MEMORY_FILE            = "trade_memory.json"
 
 # ── Risk Management ───────────────────────────────────────────────────────────
 ACCOUNT_BALANCE        = 10_000.0   # starting balance USD
 RISK_PER_TRADE_PCT     = 0.01       # 1% risk per trade
 MAX_OPEN_TRADES        = 3
 REWARD_RISK_RATIO      = 2.0        # minimum RR required to take trade
-STOP_ATR_MULT          = 1.5        # stop = X * ATR beyond entry
+STOP_ATR_MULT          = 1.5        # fallback stop = X * ATR beyond entry
+SWING_SL_BUFFER        = 0.15       # ATR buffer beyond swing point for SL
+MAX_SL_ATR             = 2.0        # hard cap: SL never wider than X * ATR
 TRAILING_STOP          = True
 TRAILING_ATR_MULT      = 1.0
 

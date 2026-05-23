@@ -78,13 +78,14 @@ def account_info() -> dict:
     if info is None:
         return {}
     return {
-        "balance" : info.balance,
-        "equity"  : info.equity,
-        "margin"  : info.margin,
+        "balance"    : info.balance,
+        "equity"     : info.equity,
+        "margin"     : info.margin,
         "free_margin": info.margin_free,
-        "profit"  : info.profit,
-        "currency": info.currency,
-        "leverage": info.leverage,
+        "profit"     : info.profit,
+        "currency"   : info.currency,
+        "leverage"   : info.leverage,
+        "trade_mode" : info.trade_mode,   # 0=demo, 1=real/live
     }
 
 
@@ -209,7 +210,7 @@ def _get_filling_mode(symbol: str) -> int:
 
 def place_market_order(symbol: str, direction: str, lot: float,
                        stop_loss: float, take_profit: float,
-                       comment: str = "CTCFx") -> Optional[dict]:
+                       comment: str = "GRIWD") -> Optional[dict]:
     """
     Place a market order.
     direction: "buy" | "sell"
@@ -304,7 +305,7 @@ def close_position(ticket: int, symbol: str) -> bool:
         "price"       : price,
         "deviation"   : 20,
         "magic"       : 202400,
-        "comment"     : "CTCFx close",
+        "comment"     : "GRIWD close",
         "type_time"   : mt5.ORDER_TIME_GTC,
         "type_filling": mt5.ORDER_FILLING_IOC,
     }

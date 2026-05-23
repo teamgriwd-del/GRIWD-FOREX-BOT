@@ -23,7 +23,7 @@ from zone_detector import build_zone_map
 from data_feed import compute_atr
 from config import ENTRY_TF, CONFIRM_TF, TREND_TF, ATR_PERIOD
 
-PREFIX = "CTCFx_"          # all objects use this prefix so we can batch-delete
+PREFIX = "GRIWD_"          # all objects use this prefix so we can batch-delete
 FAR_FUTURE = datetime(2099, 12, 31, tzinfo=timezone.utc)
 
 # ── Color helpers (MT5 uses 0x00BBGGRR  Windows COLORREF) ─────────────────────

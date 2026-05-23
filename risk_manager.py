@@ -7,9 +7,11 @@ drawdown limits, and equity curve management.
 from dataclasses import dataclass, field
 from typing import Optional
 from config import (
-    ACCOUNT_BALANCE, RISK_PER_TRADE_PCT, MAX_OPEN_TRADES,
+    ACCOUNT_BALANCE, RISK_PER_TRADE_PCT, LIVE_RISK_PER_TRADE,
+    MAX_OPEN_TRADES, LIVE_MAX_OPEN_TRADES,
     TRAILING_STOP, TRAILING_ATR_MULT, COMMISSION,
-    PIP_VALUE, CONTRACT_SIZE,
+    PIP_VALUE, CONTRACT_SIZE, MICRO_PIP_VALUE, MICRO_CONTRACT_SIZE,
+    MODE,
 )
 
 
@@ -29,34 +31,38 @@ class Trade:
     trailing_stop: float = 0.0
     reasons: list = field(default_factory=list)
     pattern: str = ""
-    score: int = 0
+    score: float = 0.0
 
 
 class RiskManager:
-    def __init__(self, balance: float = ACCOUNT_BALANCE):
+    def __init__(self, balance: float = ACCOUNT_BALANCE, memory=None):
         self.balance        = balance
         self.equity         = balance
         self.peak_equity    = balance
         self.open_trades: list[Trade] = []
         self.closed_trades: list[Trade] = []
         self._trade_counter = 0
+        self._memory        = memory   # TradeMemory instance (optional)
 
     # ── Position Sizing ───────────────────────────────────────────────────────
 
     def position_size(self, entry: float, stop_loss: float) -> float:
-        """Calculate lot size based on risk % and stop distance."""
-        risk_amount = self.balance * RISK_PER_TRADE_PCT
+        """Calculate lot size using mode- and account-type-aware parameters."""
+        risk_pct      = LIVE_RISK_PER_TRADE if MODE.mode != "backtest" else RISK_PER_TRADE_PCT
+        pip_val       = MICRO_PIP_VALUE    if MODE.account_type == "micro" else PIP_VALUE
+        contract      = MICRO_CONTRACT_SIZE if MODE.account_type == "micro" else CONTRACT_SIZE
+        risk_amount   = self.balance * risk_pct
         stop_distance = abs(entry - stop_loss)
         if stop_distance == 0:
             return 0.01
-        # Assume pip_value per lot; stop_distance in price units = pips
-        lot_size = risk_amount / (stop_distance * PIP_VALUE * CONTRACT_SIZE)
+        lot_size = risk_amount / (stop_distance * pip_val * contract)
         return max(0.01, round(lot_size, 2))
 
     # ── Trade Lifecycle ───────────────────────────────────────────────────────
 
     def can_open(self) -> bool:
-        return len(self.open_trades) < MAX_OPEN_TRADES
+        max_trades = LIVE_MAX_OPEN_TRADES if MODE.mode != "backtest" else MAX_OPEN_TRADES
+        return len(self.open_trades) < max_trades
 
     def open_trade(self, signal, atr: float = 1.0) -> Optional[Trade]:
         if not self.can_open():
@@ -80,37 +86,52 @@ class RiskManager:
         return trade
 
     def update_trailing_stop(self, trade: Trade, current_price: float, atr: float):
-        """Move stop loss in profit direction if TRAILING_STOP enabled."""
+        """Move stop loss in profit direction if TRAILING_STOP enabled.
+        Breakeven lock: once 1 ATR in profit, SL cannot fall below entry."""
         if not TRAILING_STOP:
             return
         trail_dist = atr * TRAILING_ATR_MULT
         if trade.direction == "buy":
-            new_stop = current_price - trail_dist
-            if new_stop > trade.trailing_stop:
-                trade.trailing_stop = new_stop
-                trade.stop_loss = new_stop
+            if current_price > trade.entry:
+                new_stop = current_price - trail_dist
+                if current_price >= trade.entry + atr:   # 1 ATR in profit → lock BE
+                    new_stop = max(new_stop, trade.entry)
+                if new_stop > trade.trailing_stop:
+                    trade.trailing_stop = new_stop
+                    trade.stop_loss = new_stop
         else:
-            new_stop = current_price + trail_dist
-            if new_stop < trade.trailing_stop or trade.trailing_stop == trade.stop_loss:
-                trade.trailing_stop = new_stop
-                trade.stop_loss = new_stop
+            if current_price < trade.entry:
+                new_stop = current_price + trail_dist
+                if current_price <= trade.entry - atr:   # 1 ATR in profit → lock BE
+                    new_stop = min(new_stop, trade.entry)
+                if new_stop < trade.trailing_stop:
+                    trade.trailing_stop = new_stop
+                    trade.stop_loss = new_stop
 
     def check_close(self, trade: Trade, current_price: float,
-                    current_time) -> bool:
-        """Returns True if trade should be closed."""
+                    current_time, bar_high: float = None,
+                    bar_low: float = None) -> bool:
+        """
+        Returns True if trade should be closed.
+        Uses bar high/low for intrabar SL/TP detection so wicks don't slip past stops.
+        Falls back to close price when high/low are not provided.
+        """
+        hi = bar_high if bar_high is not None else current_price
+        lo = bar_low  if bar_low  is not None else current_price
+
         if trade.direction == "buy":
-            if current_price <= trade.stop_loss:
-                self._close(trade, current_price, current_time, "stopped")
+            if lo <= trade.stop_loss:
+                self._close(trade, trade.stop_loss, current_time, "stopped")
                 return True
-            if current_price >= trade.take_profit:
-                self._close(trade, current_price, current_time, "tp_hit")
+            if hi >= trade.take_profit:
+                self._close(trade, trade.take_profit, current_time, "tp_hit")
                 return True
         else:
-            if current_price >= trade.stop_loss:
-                self._close(trade, current_price, current_time, "stopped")
+            if hi >= trade.stop_loss:
+                self._close(trade, trade.stop_loss, current_time, "stopped")
                 return True
-            if current_price <= trade.take_profit:
-                self._close(trade, current_price, current_time, "tp_hit")
+            if lo <= trade.take_profit:
+                self._close(trade, trade.take_profit, current_time, "tp_hit")
                 return True
         return False
 
@@ -119,7 +140,7 @@ class RiskManager:
             gross = (price - trade.entry) * trade.lot_size * CONTRACT_SIZE * PIP_VALUE
         else:
             gross = (trade.entry - price) * trade.lot_size * CONTRACT_SIZE * PIP_VALUE
-        trade.pnl        = gross - COMMISSION
+        trade.pnl         = gross - COMMISSION
         trade.close_price = price
         trade.close_time  = time
         trade.status      = status
@@ -128,6 +149,9 @@ class RiskManager:
         self.peak_equity  = max(self.peak_equity, self.equity)
         self.open_trades.remove(trade)
         self.closed_trades.append(trade)
+        # Teach the learning engine what this trade looked like
+        if self._memory is not None:
+            self._memory.record_trade(trade)
 
     # ── Portfolio Stats ───────────────────────────────────────────────────────
 
